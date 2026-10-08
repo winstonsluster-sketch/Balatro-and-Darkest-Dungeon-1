@@ -1,0 +1,4 @@
+resistances: .stun 40% .poison 30% .bleed 30% .disease 30% .move 40% .debuff 30% .death_blow 67% .trap 10%
+weapon: .name "crusader_weapon_0" .atk 0% .dmg 6 13 .crit 3% .spd 1
+weapon: .name "crusader_weapon_1" .atk 0% .dmg 7 15 .crit 4% .spd 1
+armour: .name "crusader_armour_0" .def 5% .prot 0 .hp 33 .spd 0

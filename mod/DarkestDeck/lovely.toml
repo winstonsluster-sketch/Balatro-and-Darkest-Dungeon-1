@@ -1,0 +1,29 @@
+[manifest]
+version = "1.0.0"
+priority = 0
+
+# Darkest Deck: the mod's Lua is loaded as modules, then installed once at the
+# end of main.lua (after every game file is loaded, before love.load runs).
+# Everything else wraps Balatro functions at runtime; see design/sheets/hooks.json.
+
+[[patches]]
+[patches.module]
+source = "ddeck/data.lua"
+before = "main.lua"
+name = "ddeck.data"
+
+[[patches]]
+[patches.module]
+source = "ddeck/core.lua"
+before = "main.lua"
+name = "ddeck.core"
+
+[[patches]]
+[patches.copy]
+target = "main.lua"
+position = "append"
+payload = '''
+-- Darkest Deck bootstrap
+local ok, err = pcall(function() require("ddeck.core").install() end)
+if not ok then print("[DarkestDeck] failed to install: " .. tostring(err)) end
+'''

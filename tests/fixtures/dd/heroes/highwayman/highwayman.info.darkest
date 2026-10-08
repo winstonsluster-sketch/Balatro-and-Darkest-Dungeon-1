@@ -1,0 +1,2 @@
+weapon: .name "highwayman_weapon_0" .atk 0% .dmg 5 11 .crit 10% .spd 5
+armour: .name "highwayman_armour_0" .def 10% .prot 0 .hp 23 .spd 0

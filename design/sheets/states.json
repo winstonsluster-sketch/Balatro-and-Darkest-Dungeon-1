@@ -1,0 +1,12 @@
+{
+  "sheet": "states",
+  "about": "What a hero rolls when its Stress reaches the resolve threshold (constants.resolve_at). Afflictions are picked at random by weight; virtues likewise, with constants.virtue_chance deciding which list is used.",
+  "columns": ["key", "name", "kind", "weight", "effect", "value", "colour", "text", "verified"],
+  "rows": [
+    {"key": "abusive",  "name": "Abusive",  "kind": "affliction", "weight": 1, "effect": "stress_others",   "value": 4,   "colour": "#B3261E", "text": "Abusive: other heroes gain +4 Stress each hand", "verified": "headless"},
+    {"key": "hopeless", "name": "Hopeless", "kind": "affliction", "weight": 1, "effect": "disable_ability", "value": 0,   "colour": "#B3261E", "text": "Hopeless: this hero's ability does nothing", "verified": "headless"},
+    {"key": "selfish",  "name": "Selfish",  "kind": "affliction", "weight": 1, "effect": "lose_money_eor",  "value": 2,   "colour": "#B3261E", "text": "Selfish: lose $2 at end of round", "verified": "headless"},
+    {"key": "stalwart", "name": "Stalwart", "kind": "virtue",     "weight": 1, "effect": "no_stress_xmult", "value": 1.5, "colour": "#E8C547", "text": "Stalwart: X1.5 Mult, gains no Stress", "verified": "headless"},
+    {"key": "powerful", "name": "Powerful", "kind": "virtue",     "weight": 1, "effect": "xmult",           "value": 2,   "colour": "#E8C547", "text": "Powerful: X2 Mult", "verified": "headless"}
+  ]
+}
