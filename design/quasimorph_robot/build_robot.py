@@ -41,18 +41,32 @@ def paint(im,pts,col,only=('b',)):
     for x,y in pts:
         if 0<=x<im.width and 0<=y<im.height and fam(px[x,y]) in only: px[x,y]=col
 
-head=crop(P[2]); core=crop(P[4])
-armR=crop(P[1].rotate(90,expand=True));  armL=twin(armR)
-legR=crop(P[3].rotate(-90,expand=True)); legL=twin(legR)      # kneecaps face outward
-padL=crop(P[5]);                         padR=twin(padL)
-
-# --- per-side wear: same model of limb, different history (kept minimal) ---
-for y,c in ((8,RD[2]),(9,RD[1]),(10,RD[0])):             # red unit band, left upper arm
-    paint(armL,[(x,y) for x in range(armL.width)],c,('b','g','x'))
-paint(armR,[(8,6),(9,7),(10,8)],BR[7]); paint(armR,[(9,6),(10,7),(11,8)],BR[1])   # gouge, right upper arm
-paint(legL,[(10,20),(11,21)],BR[7]); paint(legL,[(11,20),(12,21)],BR[1])             # knee scuff
-
-W,Hh=96,124
+head=crop(P[2])
+arm=crop(P[1].rotate(90,expand=True))                 # shoulder top, elbow points back (right)
+leg=twin(crop(P[3].rotate(-90,expand=True)))          # kneecap faces forward (left), lit upper-left
+leg=leg.crop((0,0,leg.width,28))                      # source claw-foot replaced by a proper boot
+pad=crop(P[5])
+ORDER=[BR[0],BR[1],BR[2],BR[3],BR[4],BR[5],BR[6],BR[7],BR[8]]
+def darker(im,n=2):
+    """far-side limb: same part, further from the light"""
+    im=im.copy(); q=im.load()
+    for y in range(im.height):
+        for x in range(im.width):
+            c=q[x,y]
+            if not c[3]: continue
+            if c in BR_EXTRA: c=BR[2] if c==BR_EXTRA[0] else BR[5]
+            if c in ORDER: q[x,y]=ORDER[max(0,ORDER.index(c)-n)]
+            elif c in GR: q[x,y]=GR[max(0,GR.index(c)-1)]
+            elif c in GN or c==OR: q[x,y]=GR[1]          # far-side cable sinks into shadow
+    return im
+# wear: chip out of the pauldron's front edge, scratches on the near arm
+pq=pad.load()
+for x,y in ((2,4),(3,4),(2,5),(3,5),(4,5),(3,6),(4,6)): pq[x,y]=(0,0,0,0)
+for x,y in ((1,4),(1,5),(2,6),(3,7),(4,7),(5,6),(5,5),(4,4),(3,3),(2,3)):
+    if pq[x,y][3]: pq[x,y]=K
+paint(arm,[(9,5),(10,6)],BR[7]); paint(arm,[(10,5),(11,6)],BR[1])
+paint(arm,[(6,25),(7,26),(8,27)],BR[1])
+W,Hh=80,110
 cv=Image.new('RGBA',(W,Hh)); px=cv.load()
 def layer_draw(pix):
     for (x,y) in pix:
@@ -116,26 +130,49 @@ def slot(pix,x,y,n=2):                                                    # rece
     for k in range(n): pix[(x+k,y)]=GR[0]
     for k in range(n): pix.setdefault((x+k,y-1),None); pix[(x+k,y-1)]=BR[0]
 
-def carapace(cx,y0):
-    prof=[18,24,28,30,32,32,32,32,32,32,32,31,31,30,29,28,27,26,25,24,23,22,21,20]
-    rows=[(cx-w//2,cx-w//2+w-1) for w in prof]
-    pix=shade(rows_mask(rows,y0),bright=0.12,form=0.5)
-    # two pectoral plates, each a convex slab lit from the upper-left
-    for half in (0,1):
-        m={p for p in pix if (p[0]<cx-1 if half==0 else p[0]>cx) and y0+1<=p[1]<=y0+13}
-        pix.update(dome(m,bright=0.12 if half==0 else 0.0))
-    for y in range(y0+1,y0+14):                          # sternum seam
-        pix[(cx-1,y)]=BR[0]; pix[(cx,y)]=GR[0]
-    for x in range(rows[14][0]+1,rows[14][1]):          # lower edge of the chest plates
-        pix[(x,y0+14)]=BR[0]
-    # chest light in a recessed housing
-    for x in range(cx-4,cx+4):
-        for y in range(y0+16,y0+20): pix[(x,y)]=GR[0]
-    for x in range(cx-3,cx+3):
-        pix[(x,y0+17)]=RD[2] if cx-2<=x<=cx+1 else RD[1]
-        pix[(x,y0+18)]=RD[1] if cx-2<=x<=cx+1 else RD[0]
-    for ry in (11,):
-        l,r=rows[ry]; slot(pix,l+2,y0+ry); slot(pix,r-3,y0+ry)
+RW=["xxx.x...x","x.x.x...x","xx..x.x.x","x.x.xx.xx","x.x.x...x"]   # placeholder stencil
+def torso34(tx,y0):
+    """3/4 torso facing left: lit front face (left), shaded side face (right)"""
+    seam=tx+14
+    front=[];side=[]
+    for i in range(24):
+        bul=[0,1,1,2,2,2,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0][i]
+        l=tx-bul+(3 if i>=15 else 0)+(1 if i==0 else 0)
+        r=tx+23-(1 if i==0 else 0)-(1 if i>=13 else 0)-(1 if i>=17 else 0)-(1 if i>=20 else 0)
+        front.append((l,seam-1)); side.append((seam,r))
+    pix={}
+    pix.update(dome(rows_mask(front[:15],y0),bright=0.2,lx=0.3,ly=0.25))
+    pix.update(dome(rows_mask(front[15:],y0+15),bright=0.05,lx=0.35,ly=0.2))
+    pix.update(dome(rows_mask(side[:15],y0),bright=-0.12,lx=0.1,ly=0.2))
+    pix.update(dome(rows_mask(side[15:],y0+15),bright=-0.2,lx=0.1,ly=0.2))
+    for y in range(y0+1,y0+24): pix[(seam,y)]=BR[0]                    # edge between the faces
+    for x in range(front[14][0]+1,side[14][1]): pix[(x,y0+14)]=BR[0]   # chest / abdomen split
+    for x in range(front[15][0]+1,front[15][0]+5): pix[(x,y0+15)]=BR[5]
+    for y in range(y0+16,y0+23):                                         # exposed spine at the back
+        r=side[y-y0][1]
+        for k,x in enumerate(range(r-2,r+1)): pix[(x,y)]=[GR[3],GR[2],GR[0]][k] if (y-y0)%2 else GR[0]
+    lx_,ly_=tx+3,y0+4                                                    # logo plate (placeholder RW)
+    for j in range(-1,6):
+        for i in range(-1,10): pix[(lx_+i,ly_+j)]=BR[1]
+    for j,line in enumerate(RW):
+        for i,ch in enumerate(line):
+            if ch=="x": pix[(lx_+i,ly_+j)]=RD[2] if j<2 else RD[1]
+    for x in range(lx_-1,lx_+10): pix[(x,ly_+6)]=BR[5]
+    # battle damage: torn plate at the lower front of the chest, wires showing
+    bx,by=front[12][0]+2,y0+11
+    for (x,y) in ((bx,by),(bx+1,by),(bx+2,by),(bx,by+1),(bx+1,by+1),(bx,by+2)): pix[(x,y)]=GR[0]
+    pix[(bx+1,by+1)]=RD[0]; pix[(bx,by+2)]=GR[3]; pix[(bx+1,by+2)]=RD[1]
+    pix[(bx+3,by)]=BR[6]; pix[(bx+2,by+1)]=BR[6]                          # bright torn edge
+    return pix
+def boot(ax,ay):
+    spans=[(-3,3),(-5,4),(-7,5),(-9,5),(-10,6),(-10,6)]
+    rows=[(ax+l,ax+r) for l,r in spans]
+    pix=dome(rows_mask(rows,ay),bright=0.35,lx=0.2,ly=0.15)
+    for x in range(ax-10,ax+7): pix[(x,ay+6)]=GR[1] if (x-ax)%3 else GR[0]     # sole + tread
+    for x in range(ax-10,ax-6): pix[(x,ay+6)]=GR[2]
+    for y in range(ay+2,ay+6): pix[(ax-4,y)]=BR[1]                            # toe-cap seam
+    pix[(ax-7,ay+3)]=BR[8]; pix[(ax-8,ay+4)]=BR[7]; pix[(ax-6,ay+3)]=BR[7]   # toe-cap shine
+    pix[(ax+4,ay+3)]=GR[0]                                                     # heel bolt
     return pix
 def abdomen_spine(cx,y0,h):
     pix={}
@@ -182,13 +219,8 @@ def pouch(x0,y0,w=5,h=4):
     pix[(x0+w//2,y0+1)]=GR[3]
     return pix
 def pelvis(cx,y0):
-    rows=[(cx-(w//2),cx-(w//2)+w-1) for w in (28,28,26,24,20,16)]
-    pix=shade(rows_mask(rows,y0),bright=0.05)
-    for i in range(5):
-        for x in range(cx-3+i//2,cx+3-i//2): pix[(x,y0+6+i)]=None
-    g={k for k,v in pix.items() if v is None}
-    pix.update(shade(g,bright=0.1))
-    return pix
+    rows=[(cx-7,cx+7),(cx-7,cx+7),(cx-6,cx+7),(cx-5,cx+6)]
+    return dome(rows_mask(rows,y0),bright=0.05)
 def tasset(xl,y0,w,h,side):
     rows=[]
     for i in range(h):
@@ -205,7 +237,7 @@ def tasset(xl,y0,w,h,side):
     return pix
 def shell(cxl,y0,rows_w):
     rows=[(cxl-w//2,cxl-w//2+w-1) for w in rows_w]
-    return shade(rows_mask(rows,y0),bright=0.22)
+    return dome(rows_mask(rows,y0),bright=0.1,lx=0.2,ly=0.2)
 def neck(cx,y0,h):
     return {(x,y0+i):(GR[3] if i%2==0 else GR[1]) if x<cx+2 else GR[0] for i in range(h) for x in range(cx-3,cx+3)}
 def antenna(x,y0,h):
@@ -215,32 +247,30 @@ def antenna(x,y0,h):
 def cable(points,shade_=1):
     return {(x,y):GN[shade_ if j%3 else shade_+1] for j,(x,y) in enumerate(points)}
 
-# ---------------- assemble ----------------
-cx=44
-cy=30
-layer_draw(neck(cx,cy-4,6))
-hip=12
-LY=cy+38                                             # leg sprite top
-lxL,lxR=cx-hip-8,cx+hip-9                            # leg sprite x (thigh centre ~ +8 / +9)
-# armour shells behind the legs (bulk): thigh and calf
-layer_draw(shell(cx-hip,LY+1,[12,13,14,14,14,14,14,14,13,13,12,12,11,10]))
-layer_draw(shell(cx+hip,LY+1,[12,13,14,14,14,14,14,14,13,13,12,12,11,10]))
-layer_draw(shell(cx-hip+1,LY+19,[11,12,12,12,12,11,11,10,9]))
-layer_draw(shell(cx+hip-1,LY+19,[11,12,12,12,12,11,11,10,9]))
-sprite(legL,lxL,LY); sprite(legR,lxR,LY)
-layer_draw(joint(cx-hip+1,LY,4)); layer_draw(joint(cx+hip-1,LY,4))
-layer_draw(pelvis(cx,cy+33))
-layer_draw(tasset(cx-hip-6,cy+35,11,11,-1))
-layer_draw(tasset(cx+hip-5,cy+35,11,11,1))
-# abdomen: torso core's dark connector continues down as an exposed spine between two plates
-layer_draw(abdomen_spine(cx-2,cy+18,13))
-layer_draw(ab_plate(cx-6,cy+20,10,-1))
-layer_draw(ab_plate(cx+2,cy+20,10,1))
-layer_draw(belt(cx,cy+30,28))
-sprite(armL,cx-29,cy+4); sprite(armR,cx+13,cy+4)
-layer_draw(carapace(cx,cy))
-sprite(head,cx-10,cy-18)
-sprite(padL,cx-25,cy-4); sprite(padR,cx+10,cy-4)
+# ---------------- assemble (uniform 3/4 view, facing left) ----------------
+tx=24; ty=26
+DK=lambda d:{k:(ORDER[max(0,ORDER.index(v)-2)] if v in ORDER else GR[max(0,GR.index(v)-1)] if v in GR else v) for k,v in d.items()}
+def leg_at(img,lx,dark):
+    sh=shell(lx+11,LY+2,[6,7,7,7,7,7,7,6,6,5,5,4])
+    layer_draw(DK(sh) if dark else sh)
+    sprite(img,lx,LY)
+    a=joint(lx+6,LY+28,2); b=boot(lx+6,LY+29)
+    layer_draw(DK(a) if dark else a); layer_draw(DK(b) if dark else b)
+LY=ty+26
+# far side, back to front
+sprite(darker(pad),tx-7,ty-3)
+sprite(darker(arm),tx-9,ty+2)
+layer_draw(DK(joint(tx+5,ty+27,3)))
+leg_at(darker(leg),tx-3,True)
+layer_draw(neck(tx+11,ty-3,4))
+layer_draw(pelvis(tx+11,ty+23))
+layer_draw(torso34(tx,ty))
+layer_draw(joint(tx+17,ty+27,4))
+leg_at(leg,tx+9,False)
+layer_draw(tasset(tx+13,ty+24,9,8,1))
+sprite(head,tx+1,ty-20)
+sprite(arm,tx+15,ty+3)
+sprite(pad,tx+13,ty-3)
 
 GREY={'261209':'2b2626','3d1f12':'3a3333','4f2c19':'4a4242','502c1a':'4a4242','623921':'5a5151',
       '704325':'675d5c','84512f':'7a706e','8d5936':'807573','aa6e46':'9c908c','cea173':'bfb5af','e2cc98':'ddd5cf',
