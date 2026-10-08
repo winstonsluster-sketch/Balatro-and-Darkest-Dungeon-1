@@ -1,6 +1,6 @@
 {
  "sheet": "constants",
- "about": "Stress rules, modelled on Darkest Dungeon's: stress builds, at 100 the hero's resolve is tested, at 200 an afflicted hero suffers a heart attack.",
+ "about": "Rules and difficulty. Stress and Death's Door follow Darkest Dungeon.",
  "columns": [
   "key",
   "value",
@@ -11,19 +11,123 @@
  ],
  "rows": [
   {
-   "key": "discard_stress",
+   "key": "ante_scaling",
    "value": 3,
-   "unit": "stress",
-   "used_by": "on_discard",
-   "text": "Every discard adds Stress to every hero",
+   "unit": "x",
+   "used_by": "apply_difficulty",
+   "text": "Blind score requirements are this many times Balatro's",
    "verified": "headless"
   },
   {
-   "key": "camp_relief",
-   "value": 15,
+   "key": "hands_delta",
+   "value": -1,
+   "unit": "hands",
+   "used_by": "apply_difficulty",
+   "text": "Change to hands per round",
+   "verified": "headless"
+  },
+  {
+   "key": "discards_delta",
+   "value": -1,
+   "unit": "discards",
+   "used_by": "apply_difficulty",
+   "text": "Change to discards per round",
+   "verified": "headless"
+  },
+  {
+   "key": "party_size",
+   "value": 4,
+   "unit": "slots",
+   "used_by": "apply_difficulty",
+   "text": "Joker slots: a Darkest Dungeon party of four",
+   "verified": "headless"
+  },
+  {
+   "key": "enemy_dmg_per_ante",
+   "value": 0.25,
+   "unit": "x",
+   "used_by": "enemy_attack",
+   "text": "Enemy damage grows by this much per Ante",
+   "verified": "headless"
+  },
+  {
+   "key": "dodge_scale",
+   "value": 2,
+   "unit": "x",
+   "used_by": "enemy_attack",
+   "text": "Dodge chance = hero defence % times this",
+   "verified": "headless"
+  },
+  {
+   "key": "guard_chance",
+   "value": 50,
+   "unit": "percent",
+   "used_by": "pick_target",
+   "text": "Chance a living Man-at-Arms takes the hit instead",
+   "verified": "headless"
+  },
+  {
+   "key": "rank_w1",
+   "value": 40,
+   "unit": "weight",
+   "used_by": "pick_target",
+   "text": "How often enemies target rank 1",
+   "verified": "headless"
+  },
+  {
+   "key": "rank_w2",
+   "value": 30,
+   "unit": "weight",
+   "used_by": "pick_target",
+   "text": "...rank 2",
+   "verified": "headless"
+  },
+  {
+   "key": "rank_w3",
+   "value": 20,
+   "unit": "weight",
+   "used_by": "pick_target",
+   "text": "...rank 3",
+   "verified": "headless"
+  },
+  {
+   "key": "rank_w4",
+   "value": 10,
+   "unit": "weight",
+   "used_by": "pick_target",
+   "text": "...rank 4 and beyond",
+   "verified": "headless"
+  },
+  {
+   "key": "small_enemies",
+   "value": 2,
+   "unit": "enemies",
+   "used_by": "new_encounter",
+   "text": "Enemies in a Small Blind",
+   "verified": "headless"
+  },
+  {
+   "key": "big_enemies",
+   "value": 3,
+   "unit": "enemies",
+   "used_by": "new_encounter",
+   "text": "Enemies in a Big Blind",
+   "verified": "headless"
+  },
+  {
+   "key": "boss_minions",
+   "value": 1,
+   "unit": "enemies",
+   "used_by": "new_encounter",
+   "text": "Minions beside the boss",
+   "verified": "headless"
+  },
+  {
+   "key": "discard_stress",
+   "value": 2,
    "unit": "stress",
-   "used_by": "on_round_end",
-   "text": "End of round: every hero loses this much Stress (camping)",
+   "used_by": "on_discard",
+   "text": "Each discard adds this to every hero",
    "verified": "headless"
   },
   {
@@ -39,7 +143,15 @@
    "value": 200,
    "unit": "stress",
    "used_by": "add_stress",
-   "text": "An afflicted hero dies (the Joker is destroyed) at this Stress",
+   "text": "Heart attack: Death's Door, or death if already there",
+   "verified": "headless"
+  },
+  {
+   "key": "heart_attack_reset",
+   "value": 170,
+   "unit": "stress",
+   "used_by": "heart_attack",
+   "text": "Stress after surviving a heart attack",
    "verified": "headless"
   },
   {
@@ -47,7 +159,7 @@
    "value": 25,
    "unit": "percent",
    "used_by": "resolve",
-   "text": "Chance the resolve test gives a Virtue instead of an Affliction (Darkest Dungeon's base is 25%)",
+   "text": "Chance the resolve test gives a Virtue",
    "verified": "headless"
   },
   {
@@ -59,19 +171,19 @@
    "verified": "headless"
   },
   {
-   "key": "virtue_rounds",
-   "value": 1,
-   "unit": "rounds",
-   "used_by": "on_round_end",
-   "text": "A Virtue lasts this many rounds",
-   "verified": "headless"
-  },
-  {
    "key": "clear_below",
    "value": 50,
    "unit": "stress",
-   "used_by": "on_round_end",
-   "text": "An Affliction clears once Stress falls below this",
+   "used_by": "run_camp",
+   "text": "At camp, an Affliction ends if Stress is below this",
+   "verified": "headless"
+  },
+  {
+   "key": "respite",
+   "value": 12,
+   "unit": "points",
+   "used_by": "run_camp",
+   "text": "Respite points to spend at each camp",
    "verified": "headless"
   },
   {
@@ -79,7 +191,7 @@
    "value": 0.25,
    "unit": "alpha",
    "used_by": "torch_alpha",
-   "text": "Vignette darkness with a calm party (and outside runs)",
+   "text": "Vignette darkness with a calm party",
    "verified": "headless"
   },
   {
@@ -87,23 +199,23 @@
    "value": 0.75,
    "unit": "alpha",
    "used_by": "torch_alpha",
-   "text": "Vignette darkness when the party's average Stress reaches resolve_at",
+   "text": "Vignette darkness at average Stress = resolve_at",
    "verified": "headless"
   },
   {
-   "key": "backdrop_alpha",
-   "value": 0.45,
+   "key": "backdrop_dim",
+   "value": 0.35,
    "unit": "alpha",
    "used_by": "draw_backdrop",
-   "text": "How strongly the dungeon corridor art shows over the swirling background",
+   "text": "Darkening laid over the backdrop so cards stay readable",
    "verified": "headless"
   },
   {
    "key": "corridor_tiles",
    "value": 12,
    "unit": "files",
-   "used_by": "load_backdrops",
-   "text": "How many numbered corridor_wall images to look for per area",
+   "used_by": "area_images",
+   "text": "Most images to use per area when probing by number",
    "verified": "headless"
   }
  ]

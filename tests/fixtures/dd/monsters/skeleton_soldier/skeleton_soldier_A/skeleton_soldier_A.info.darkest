@@ -1,0 +1,2 @@
+stats: .hp 9 .def 10% .prot 0 .spd 2
+skill: .id "graveyard_slash" .dmg 2 7 .crit 6%

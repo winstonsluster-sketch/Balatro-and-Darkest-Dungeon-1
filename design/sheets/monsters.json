@@ -1,0 +1,654 @@
+{
+ "sheet": "monsters",
+ "about": "Enemies, read from the player's install at monsters/<dd_family>/<dd_family>_A/<dd_family>_A.info.darkest (stats .hp, first skill .dmg). Bosses take over a vanilla boss Blind (boss_blind), whose effect fits them; its name and text are replaced. 'stress' is what each living enemy adds to every hero per hand spent.",
+ "columns": [
+  "key",
+  "name",
+  "area",
+  "dd_family",
+  "fallback_hp",
+  "fallback_dmg_min",
+  "fallback_dmg_max",
+  "stress",
+  "kind",
+  "boss_blind",
+  "boss_text",
+  "verified"
+ ],
+ "rows": [
+  {
+   "key": "bone_soldier",
+   "name": "Bone Soldier",
+   "area": "ruins",
+   "dd_family": "skeleton_soldier",
+   "fallback_hp": 10,
+   "fallback_dmg_min": 3,
+   "fallback_dmg_max": 8,
+   "stress": 2,
+   "kind": "unholy",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "bone_arbalist",
+   "name": "Bone Arbalist",
+   "area": "ruins",
+   "dd_family": "skeleton_arbalist",
+   "fallback_hp": 12,
+   "fallback_dmg_min": 4,
+   "fallback_dmg_max": 9,
+   "stress": 2,
+   "kind": "unholy",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "bone_defender",
+   "name": "Bone Defender",
+   "area": "ruins",
+   "dd_family": "skeleton_defender",
+   "fallback_hp": 14,
+   "fallback_dmg_min": 2,
+   "fallback_dmg_max": 5,
+   "stress": 1,
+   "kind": "unholy",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "bone_courtier",
+   "name": "Bone Courtier",
+   "area": "ruins",
+   "dd_family": "skeleton_courtier",
+   "fallback_hp": 10,
+   "fallback_dmg_min": 2,
+   "fallback_dmg_max": 4,
+   "stress": 4,
+   "kind": "unholy",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "cultist_brawler",
+   "name": "Cultist Brawler",
+   "area": "ruins",
+   "dd_family": "cultist_brawler",
+   "fallback_hp": 13,
+   "fallback_dmg_min": 3,
+   "fallback_dmg_max": 7,
+   "stress": 2,
+   "kind": "human",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "cultist_acolyte",
+   "name": "Cultist Acolyte",
+   "area": "ruins",
+   "dd_family": "cultist_acolyte",
+   "fallback_hp": 12,
+   "fallback_dmg_min": 2,
+   "fallback_dmg_max": 5,
+   "stress": 4,
+   "kind": "human",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "madman",
+   "name": "Madman",
+   "area": "ruins",
+   "dd_family": "madman",
+   "fallback_hp": 14,
+   "fallback_dmg_min": 1,
+   "fallback_dmg_max": 3,
+   "stress": 8,
+   "kind": "human",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "swine_chopper",
+   "name": "Swine Chopper",
+   "area": "warrens",
+   "dd_family": "swine_chopper",
+   "fallback_hp": 16,
+   "fallback_dmg_min": 4,
+   "fallback_dmg_max": 10,
+   "stress": 2,
+   "kind": "beast",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "swine_slasher",
+   "name": "Swine Slasher",
+   "area": "warrens",
+   "dd_family": "swine_slasher",
+   "fallback_hp": 12,
+   "fallback_dmg_min": 3,
+   "fallback_dmg_max": 7,
+   "stress": 2,
+   "kind": "beast",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "swine_drummer",
+   "name": "Swine Drummer",
+   "area": "warrens",
+   "dd_family": "swine_drummer",
+   "fallback_hp": 12,
+   "fallback_dmg_min": 1,
+   "fallback_dmg_max": 3,
+   "stress": 6,
+   "kind": "beast",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "swine_wretch",
+   "name": "Swine Wretch",
+   "area": "warrens",
+   "dd_family": "swine_wretch",
+   "fallback_hp": 8,
+   "fallback_dmg_min": 2,
+   "fallback_dmg_max": 5,
+   "stress": 2,
+   "kind": "beast",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "carrion_eater",
+   "name": "Carrion Eater",
+   "area": "warrens",
+   "dd_family": "carrion_eater",
+   "fallback_hp": 14,
+   "fallback_dmg_min": 3,
+   "fallback_dmg_max": 8,
+   "stress": 3,
+   "kind": "beast",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "swinetaur",
+   "name": "Swinetaur",
+   "area": "warrens",
+   "dd_family": "swinetaur",
+   "fallback_hp": 24,
+   "fallback_dmg_min": 5,
+   "fallback_dmg_max": 11,
+   "stress": 3,
+   "kind": "beast",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "brigand_cutthroat",
+   "name": "Brigand Cutthroat",
+   "area": "weald",
+   "dd_family": "brigand_cutthroat",
+   "fallback_hp": 12,
+   "fallback_dmg_min": 3,
+   "fallback_dmg_max": 8,
+   "stress": 2,
+   "kind": "human",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "brigand_fusilier",
+   "name": "Brigand Fusilier",
+   "area": "weald",
+   "dd_family": "brigand_fusilier",
+   "fallback_hp": 10,
+   "fallback_dmg_min": 2,
+   "fallback_dmg_max": 6,
+   "stress": 3,
+   "kind": "human",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "brigand_bloodletter",
+   "name": "Brigand Bloodletter",
+   "area": "weald",
+   "dd_family": "brigand_bloodletter",
+   "fallback_hp": 18,
+   "fallback_dmg_min": 4,
+   "fallback_dmg_max": 9,
+   "stress": 2,
+   "kind": "human",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "fungal_scratcher",
+   "name": "Fungal Scratcher",
+   "area": "weald",
+   "dd_family": "fungal_scratcher",
+   "fallback_hp": 14,
+   "fallback_dmg_min": 3,
+   "fallback_dmg_max": 7,
+   "stress": 2,
+   "kind": "eldritch",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "fungal_artillery",
+   "name": "Fungal Artillery",
+   "area": "weald",
+   "dd_family": "fungal_artillery",
+   "fallback_hp": 10,
+   "fallback_dmg_min": 1,
+   "fallback_dmg_max": 4,
+   "stress": 4,
+   "kind": "eldritch",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "webber",
+   "name": "Webber",
+   "area": "weald",
+   "dd_family": "webber",
+   "fallback_hp": 9,
+   "fallback_dmg_min": 2,
+   "fallback_dmg_max": 5,
+   "stress": 2,
+   "kind": "beast",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "pelagic_grouper",
+   "name": "Pelagic Grouper",
+   "area": "cove",
+   "dd_family": "pelagic_grouper",
+   "fallback_hp": 14,
+   "fallback_dmg_min": 4,
+   "fallback_dmg_max": 9,
+   "stress": 2,
+   "kind": "eldritch",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "pelagic_shaman",
+   "name": "Pelagic Shaman",
+   "area": "cove",
+   "dd_family": "pelagic_shaman",
+   "fallback_hp": 12,
+   "fallback_dmg_min": 2,
+   "fallback_dmg_max": 5,
+   "stress": 6,
+   "kind": "eldritch",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "deep_stinger",
+   "name": "Deep Stinger",
+   "area": "cove",
+   "dd_family": "deep_stinger",
+   "fallback_hp": 12,
+   "fallback_dmg_min": 3,
+   "fallback_dmg_max": 8,
+   "stress": 2,
+   "kind": "eldritch",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "sea_maggot",
+   "name": "Sea Maggot",
+   "area": "cove",
+   "dd_family": "sea_maggot",
+   "fallback_hp": 10,
+   "fallback_dmg_min": 2,
+   "fallback_dmg_max": 6,
+   "stress": 2,
+   "kind": "beast",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "uca_crusher",
+   "name": "Uca Crusher",
+   "area": "cove",
+   "dd_family": "uca_crusher",
+   "fallback_hp": 22,
+   "fallback_dmg_min": 5,
+   "fallback_dmg_max": 10,
+   "stress": 2,
+   "kind": "beast",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "drowned_thrall",
+   "name": "Drowned Thrall",
+   "area": "cove",
+   "dd_family": "drowned_thrall",
+   "fallback_hp": 20,
+   "fallback_dmg_min": 4,
+   "fallback_dmg_max": 9,
+   "stress": 3,
+   "kind": "unholy",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "templar_impaler",
+   "name": "Templar Impaler",
+   "area": "darkest",
+   "dd_family": "templar_impaler",
+   "fallback_hp": 40,
+   "fallback_dmg_min": 8,
+   "fallback_dmg_max": 16,
+   "stress": 4,
+   "kind": "eldritch",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "templar_warlord",
+   "name": "Templar Warlord",
+   "area": "darkest",
+   "dd_family": "templar_warlord",
+   "fallback_hp": 45,
+   "fallback_dmg_min": 9,
+   "fallback_dmg_max": 18,
+   "stress": 4,
+   "kind": "eldritch",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "polyp",
+   "name": "Polyp",
+   "area": "darkest",
+   "dd_family": "polyp",
+   "fallback_hp": 20,
+   "fallback_dmg_min": 4,
+   "fallback_dmg_max": 8,
+   "stress": 6,
+   "kind": "eldritch",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "cultist_priest",
+   "name": "Cultist Priest",
+   "area": "darkest",
+   "dd_family": "cultist_priest",
+   "fallback_hp": 30,
+   "fallback_dmg_min": 5,
+   "fallback_dmg_max": 10,
+   "stress": 8,
+   "kind": "human",
+   "boss_blind": "-",
+   "boss_text": [
+    "-"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "necromancer",
+   "name": "Necromancer Apprentice",
+   "area": "ruins",
+   "dd_family": "necromancer",
+   "fallback_hp": 60,
+   "fallback_dmg_min": 5,
+   "fallback_dmg_max": 10,
+   "stress": 6,
+   "kind": "human",
+   "boss_blind": "bl_wall",
+   "boss_text": [
+    "The dead keep rising:",
+    "an extra large Blind"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "prophet",
+   "name": "The Prophet",
+   "area": "ruins",
+   "dd_family": "prophet",
+   "fallback_hp": 70,
+   "fallback_dmg_min": 6,
+   "fallback_dmg_max": 12,
+   "stress": 6,
+   "kind": "human",
+   "boss_blind": "bl_mouth",
+   "boss_text": [
+    "Preaches one doctrine:",
+    "play only 1 hand type"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "swine_prince",
+   "name": "The Swine Prince",
+   "area": "warrens",
+   "dd_family": "swine_prince",
+   "fallback_hp": 80,
+   "fallback_dmg_min": 6,
+   "fallback_dmg_max": 14,
+   "stress": 4,
+   "kind": "beast",
+   "boss_blind": "bl_manacle",
+   "boss_text": [
+    "Crushing bulk:",
+    "-1 hand size"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "formless_flesh",
+   "name": "The Formless Flesh",
+   "area": "warrens",
+   "dd_family": "formless_flesh",
+   "fallback_hp": 90,
+   "fallback_dmg_min": 6,
+   "fallback_dmg_max": 12,
+   "stress": 6,
+   "kind": "eldritch",
+   "boss_blind": "bl_plant",
+   "boss_text": [
+    "Absorbs the faces:",
+    "all face cards are debuffed"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "hag",
+   "name": "The Hag",
+   "area": "weald",
+   "dd_family": "hag",
+   "fallback_hp": 80,
+   "fallback_dmg_min": 6,
+   "fallback_dmg_max": 14,
+   "stress": 6,
+   "kind": "eldritch",
+   "boss_blind": "bl_hook",
+   "boss_text": [
+    "Into the cauldron:",
+    "discards 2 random cards per hand"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "fusillade",
+   "name": "Brigand Fusillade",
+   "area": "weald",
+   "dd_family": "brigand_cannon",
+   "fallback_hp": 100,
+   "fallback_dmg_min": 10,
+   "fallback_dmg_max": 20,
+   "stress": 4,
+   "kind": "human",
+   "boss_blind": "bl_needle",
+   "boss_text": [
+    "One volley:",
+    "play only 1 hand"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "siren",
+   "name": "The Siren",
+   "area": "cove",
+   "dd_family": "siren",
+   "fallback_hp": 100,
+   "fallback_dmg_min": 8,
+   "fallback_dmg_max": 16,
+   "stress": 10,
+   "kind": "eldritch",
+   "boss_blind": "bl_final_heart",
+   "boss_text": [
+    "Song of Desperation:",
+    "one hero is charmed every hand"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "drowned_crew",
+   "name": "The Drowned Crew",
+   "area": "cove",
+   "dd_family": "drowned_crew",
+   "fallback_hp": 110,
+   "fallback_dmg_min": 8,
+   "fallback_dmg_max": 16,
+   "stress": 6,
+   "kind": "unholy",
+   "boss_blind": "bl_water",
+   "boss_text": [
+    "The tide rises:",
+    "start with 0 discards"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "shuffling_horror",
+   "name": "The Shuffling Horror",
+   "area": "darkest",
+   "dd_family": "shuffling_horror",
+   "fallback_hp": 160,
+   "fallback_dmg_min": 12,
+   "fallback_dmg_max": 24,
+   "stress": 10,
+   "kind": "eldritch",
+   "boss_blind": "bl_final_vessel",
+   "boss_text": [
+    "A horror of many bodies:",
+    "a very large Blind"
+   ],
+   "verified": "headless"
+  },
+  {
+   "key": "heart_of_darkness",
+   "name": "The Heart of Darkness",
+   "area": "darkest",
+   "dd_family": "heart_of_darkness",
+   "fallback_hp": 220,
+   "fallback_dmg_min": 14,
+   "fallback_dmg_max": 28,
+   "stress": 14,
+   "kind": "eldritch",
+   "boss_blind": "bl_final_acorn",
+   "boss_text": [
+    "Come home:",
+    "flips and shuffles all heroes"
+   ],
+   "verified": "headless"
+  }
+ ]
+}

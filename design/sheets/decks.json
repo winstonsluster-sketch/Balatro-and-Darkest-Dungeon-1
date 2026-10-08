@@ -1,10 +1,34 @@
 {
-  "sheet": "decks",
-  "about": "New decks (Balatro 'Backs').",
-  "columns": ["key", "name", "order", "party", "art_from", "text", "verified"],
-  "rows": [
-    {"key": "b_ddeck_expedition", "name": "Expedition Deck", "order": 20,
-     "party": ["j_ddeck_crusader", "j_ddeck_highwayman", "j_ddeck_plague_doctor", "j_ddeck_vestal"],
-     "art_from": "b_black", "text": ["Start with a party of", "{C:attention}4 Darkest Dungeon heroes{}", "{C:inactive}Crusader, Highwayman,{}", "{C:inactive}Plague Doctor, Vestal{}"], "verified": "headless"}
-  ]
+ "sheet": "decks",
+ "about": "New decks (Balatro 'Backs').",
+ "columns": [
+  "key",
+  "name",
+  "order",
+  "party",
+  "art_from",
+  "text",
+  "verified"
+ ],
+ "rows": [
+  {
+   "key": "b_ddeck_expedition",
+   "name": "Expedition Deck",
+   "order": 20,
+   "party": [
+    "j_ddeck_crusader",
+    "j_ddeck_highwayman",
+    "j_ddeck_plague_doctor",
+    "j_ddeck_vestal"
+   ],
+   "art_from": "b_black",
+   "text": [
+    "The classic party:",
+    "{C:attention}Crusader, Highwayman,{}",
+    "{C:attention}Plague Doctor, Vestal{}",
+    "{C:inactive}(other decks hire 4 at random){}"
+   ],
+   "verified": "headless"
+  }
+ ]
 }

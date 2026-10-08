@@ -1,12 +1,78 @@
 {
-  "sheet": "areas",
-  "about": "Darkest Dungeon areas that dress Balatro's table, one per pair of Antes. Colours repaint Balatro's swirling background; the backdrop is the area's real corridor art read from the player's Darkest Dungeon install (companion_files.area_backdrop).",
-  "columns": ["key", "name", "dd_folder", "ante_from", "ante_to", "colour_main", "colour_light", "colour_dark", "contrast", "verified"],
-  "rows": [
-    {"key": "ruins",   "name": "The Ruins",   "dd_folder": "crypts",         "ante_from": 0, "ante_to": 2,  "colour_main": "#2B2F36", "colour_light": "#4A5560", "colour_dark": "#121417", "contrast": 1.2, "verified": "headless"},
-    {"key": "warrens", "name": "The Warrens", "dd_folder": "warrens",        "ante_from": 3, "ante_to": 4,  "colour_main": "#3A2420", "colour_light": "#6B3B30", "colour_dark": "#160C0A", "contrast": 1.2, "verified": "headless"},
-    {"key": "weald",   "name": "The Weald",   "dd_folder": "weald",          "ante_from": 5, "ante_to": 6,  "colour_main": "#26301F", "colour_light": "#4C5A33", "colour_dark": "#0E120B", "contrast": 1.2, "verified": "headless"},
-    {"key": "cove",    "name": "The Cove",    "dd_folder": "cove",           "ante_from": 7, "ante_to": 8,  "colour_main": "#1C2A30", "colour_light": "#2F5560", "colour_dark": "#0A1114", "contrast": 1.2, "verified": "headless"},
-    {"key": "darkest", "name": "The Darkest Dungeon", "dd_folder": "darkestdungeon", "ante_from": 9, "ante_to": 99, "colour_main": "#2A0F12", "colour_light": "#5A1A1E", "colour_dark": "#0A0304", "contrast": 1.4, "verified": "headless"}
-  ]
+ "sheet": "areas",
+ "about": "Darkest Dungeon areas that dress Balatro's table, one per pair of Antes. Colours repaint Balatro's swirling background; the backdrop is the area's real corridor art read from the player's Darkest Dungeon install (companion_files.area_backdrop).",
+ "columns": [
+  "key",
+  "name",
+  "dd_folder",
+  "ante_from",
+  "ante_to",
+  "colour_main",
+  "colour_light",
+  "colour_dark",
+  "contrast",
+  "verified"
+ ],
+ "rows": [
+  {
+   "key": "ruins",
+   "name": "The Ruins",
+   "dd_folder": "crypts",
+   "ante_from": 0,
+   "ante_to": 2,
+   "colour_main": "#2B2F36",
+   "colour_light": "#4A5560",
+   "colour_dark": "#121417",
+   "contrast": 1.2,
+   "verified": "headless"
+  },
+  {
+   "key": "warrens",
+   "name": "The Warrens",
+   "dd_folder": "warrens",
+   "ante_from": 3,
+   "ante_to": 4,
+   "colour_main": "#3A2420",
+   "colour_light": "#6B3B30",
+   "colour_dark": "#160C0A",
+   "contrast": 1.2,
+   "verified": "headless"
+  },
+  {
+   "key": "weald",
+   "name": "The Weald",
+   "dd_folder": "weald",
+   "ante_from": 5,
+   "ante_to": 6,
+   "colour_main": "#26301F",
+   "colour_light": "#4C5A33",
+   "colour_dark": "#0E120B",
+   "contrast": 1.2,
+   "verified": "headless"
+  },
+  {
+   "key": "cove",
+   "name": "The Cove",
+   "dd_folder": "cove",
+   "ante_from": 7,
+   "ante_to": 7,
+   "colour_main": "#1C2A30",
+   "colour_light": "#2F5560",
+   "colour_dark": "#0A1114",
+   "contrast": 1.2,
+   "verified": "headless"
+  },
+  {
+   "key": "darkest",
+   "name": "The Darkest Dungeon",
+   "dd_folder": "darkestdungeon",
+   "ante_from": 8,
+   "ante_to": 99,
+   "colour_main": "#2A0F12",
+   "colour_light": "#5A1A1E",
+   "colour_dark": "#0A0304",
+   "contrast": 1.4,
+   "verified": "headless"
+  }
+ ]
 }

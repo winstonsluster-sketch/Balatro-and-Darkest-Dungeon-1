@@ -92,6 +92,41 @@
    "target": "Game.draw",
    "purpose": "Draw the torchlight vignette over the finished frame",
    "verified": "headless"
+  },
+  {
+   "key": "create_card",
+   "kind": "wrap_global",
+   "target": "create_card",
+   "purpose": "Any Joker Balatro makes (shop, packs, tarots, Soul) becomes a hero",
+   "verified": "headless"
+  },
+  {
+   "key": "new_boss",
+   "kind": "wrap_global",
+   "target": "get_new_boss",
+   "purpose": "Each Boss Blind is a Darkest Dungeon boss of the current area",
+   "verified": "headless"
+  },
+  {
+   "key": "set_blind",
+   "kind": "wrap_method",
+   "target": "Blind.set_blind",
+   "purpose": "Build the enemy team; camp before a boss",
+   "verified": "headless"
+  },
+  {
+   "key": "hand_played",
+   "kind": "wrap_method",
+   "target": "Game.update_hand_played",
+   "purpose": "Enemy phase after each hand: kills, attacks, Stress, party wipe",
+   "verified": "headless"
+  },
+  {
+   "key": "card_draw",
+   "kind": "wrap_method",
+   "target": "Card.draw",
+   "purpose": "HP and Stress bars under each hero",
+   "verified": "headless"
   }
  ]
 }

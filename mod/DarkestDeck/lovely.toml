@@ -19,6 +19,18 @@ before = "main.lua"
 name = "ddeck.core"
 
 [[patches]]
+[patches.module]
+source = "ddeck/battle.lua"
+before = "main.lua"
+name = "ddeck.battle"
+
+[[patches]]
+[patches.module]
+source = "ddeck/look.lua"
+before = "main.lua"
+name = "ddeck.look"
+
+[[patches]]
 [patches.copy]
 target = "main.lua"
 position = "append"

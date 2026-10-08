@@ -1,0 +1,215 @@
+{
+ "sheet": "camping",
+ "about": "Camping skills, used only at the camp right before each Boss Blind. Living heroes' skills (and the 'any' skills) are chosen by priority until the respite budget (constants.respite) runs out.",
+ "columns": [
+  "key",
+  "name",
+  "hero",
+  "cost",
+  "priority",
+  "effect",
+  "value",
+  "text",
+  "verified"
+ ],
+ "rows": [
+  {
+   "key": "zealous_speech",
+   "name": "Zealous Speech",
+   "hero": "crusader",
+   "cost": 4,
+   "priority": 5,
+   "effect": "stress_party",
+   "value": 15,
+   "text": "Party -15 Stress",
+   "verified": "headless"
+  },
+  {
+   "key": "stand_tall",
+   "name": "Stand Tall",
+   "hero": "crusader",
+   "cost": 2,
+   "priority": 2,
+   "effect": "cure_self",
+   "value": 0,
+   "text": "Ends his own Affliction",
+   "verified": "headless"
+  },
+  {
+   "key": "gallows_humor",
+   "name": "Gallows Humor",
+   "hero": "highwayman",
+   "cost": 3,
+   "priority": 4,
+   "effect": "stress_others",
+   "value": 12,
+   "text": "Others -12 Stress",
+   "verified": "headless"
+  },
+  {
+   "key": "the_cure",
+   "name": "The Cure",
+   "hero": "plague_doctor",
+   "cost": 3,
+   "priority": 4,
+   "effect": "heal_party_pct",
+   "value": 20,
+   "text": "Party heals 20% HP",
+   "verified": "headless"
+  },
+  {
+   "key": "sanctuary",
+   "name": "Sanctuary",
+   "hero": "vestal",
+   "cost": 4,
+   "priority": 6,
+   "effect": "heal_party_pct",
+   "value": 30,
+   "text": "Party heals 30% HP",
+   "verified": "headless"
+  },
+  {
+   "key": "reject_the_gods",
+   "name": "Reject the Gods",
+   "hero": "hellion",
+   "cost": 2,
+   "priority": 3,
+   "effect": "stress_self",
+   "value": 25,
+   "text": "Hellion -25 Stress",
+   "verified": "headless"
+  },
+  {
+   "key": "unparalleled_command",
+   "name": "Unparalleled Command",
+   "hero": "man_at_arms",
+   "cost": 4,
+   "priority": 5,
+   "effect": "boss_hands",
+   "value": 1,
+   "text": "+1 hand against the boss",
+   "verified": "headless"
+  },
+  {
+   "key": "marking_the_path",
+   "name": "Marking the Path",
+   "hero": "bounty_hunter",
+   "cost": 3,
+   "priority": 4,
+   "effect": "boss_weaken",
+   "value": 10,
+   "text": "Boss Blind is 10% smaller",
+   "verified": "headless"
+  },
+  {
+   "key": "pilfer",
+   "name": "Pilfer",
+   "hero": "grave_robber",
+   "cost": 2,
+   "priority": 2,
+   "effect": "money",
+   "value": 6,
+   "text": "Gain $6",
+   "verified": "headless"
+  },
+  {
+   "key": "unspeakable_commune",
+   "name": "Unspeakable Commune",
+   "hero": "occultist",
+   "cost": 3,
+   "priority": 4,
+   "effect": "stress_party",
+   "value": 10,
+   "text": "Party -10 Stress",
+   "verified": "headless"
+  },
+  {
+   "key": "let_go",
+   "name": "Let Go",
+   "hero": "leper",
+   "cost": 2,
+   "priority": 3,
+   "effect": "stress_self",
+   "value": 25,
+   "text": "Leper -25 Stress",
+   "verified": "headless"
+  },
+  {
+   "key": "turn_back_time",
+   "name": "Turn Back Time",
+   "hero": "jester",
+   "cost": 3,
+   "priority": 4,
+   "effect": "stress_others",
+   "value": 15,
+   "text": "Others -15 Stress",
+   "verified": "headless"
+  },
+  {
+   "key": "therapy_dog",
+   "name": "Therapy Dog",
+   "hero": "hound_master",
+   "cost": 3,
+   "priority": 4,
+   "effect": "stress_party",
+   "value": 8,
+   "text": "Party -8 Stress",
+   "verified": "headless"
+  },
+  {
+   "key": "field_dressing",
+   "name": "Field Dressing",
+   "hero": "arbalest",
+   "cost": 3,
+   "priority": 5,
+   "effect": "heal_party_pct",
+   "value": 20,
+   "text": "Party heals 20% HP",
+   "verified": "headless"
+  },
+  {
+   "key": "trinket_scrounge",
+   "name": "Trinket Scrounge",
+   "hero": "antiquarian",
+   "cost": 2,
+   "priority": 3,
+   "effect": "money",
+   "value": 8,
+   "text": "Gain $8",
+   "verified": "headless"
+  },
+  {
+   "key": "absolution",
+   "name": "Absolution",
+   "hero": "abomination",
+   "cost": 2,
+   "priority": 3,
+   "effect": "stress_self",
+   "value": 30,
+   "text": "Abomination -30 Stress",
+   "verified": "headless"
+  },
+  {
+   "key": "encourage",
+   "name": "Encourage",
+   "hero": "any",
+   "cost": 2,
+   "priority": 1,
+   "effect": "stress_party",
+   "value": 5,
+   "text": "Party -5 Stress",
+   "verified": "headless"
+  },
+  {
+   "key": "wound_care",
+   "name": "Wound Care",
+   "hero": "any",
+   "cost": 2,
+   "priority": 1,
+   "effect": "heal_party_pct",
+   "value": 10,
+   "text": "Party heals 10% HP",
+   "verified": "headless"
+  }
+ ]
+}

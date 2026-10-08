@@ -14,3 +14,14 @@
 - Hooks: `ease_background_colour` (repaint), `Sprite.draw` (backdrop after `G.SPLASH_BACK`, run stage only), `Game.draw` (torchlight vignette).
 - Corridor file names follow the community pattern `dungeons/<area>/<area>.corridor_wall.<n>.png` (720x720). Unconfirmed: the log reports how many were found per area.
 - Music and sounds are not possible: Darkest Dungeon packs them in FMOD banks.
+
+## 2026-10-08: v0.3.0 is the full Darkest Dungeon redesign (untested in game)
+- Sheets: heroes (15 classes), monsters (29 regulars + 10 bosses mapped onto vanilla boss blinds), camping (18 skills), constants (difficulty, rank weights, Death's Door).
+- New hooks:
+  - `create_card`: any Joker becomes a hero.
+  - `get_new_boss`: area boss.
+  - `Blind.set_blind`: encounter, plus camp before a boss.
+  - `Game.update_hand_played`: the enemy phase, queued before Balatro's own win/lose check, so a party wipe can set hands_left = 0.
+  - `Card.draw`: HP/Stress bars.
+- Unknown DD file names are found by listing folders with `dir /b` through io.popen (lovely's console means no window flash), and logged.
+- Unverified in game: G.SPLASH_BACK being the in-run background, G.STATES names, attention_text arguments, Card.draw layer names, blind.key in set_blind, banner position.

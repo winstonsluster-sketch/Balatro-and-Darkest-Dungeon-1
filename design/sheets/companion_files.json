@@ -1,6 +1,6 @@
 {
  "sheet": "companion_files",
- "about": "What the mod reads from the player's Darkest Dungeon install (folder handed over by Melty in companion.cfg as DD_PATH). Nothing here is shipped.",
+ "about": "What the mod reads from the player's Darkest Dungeon install (DD_PATH in companion.cfg, written by Melty). Nothing here is shipped. Where exact file names are unknown, the mod lists the folder (dir /b) and logs what it found.",
  "columns": [
   "key",
   "paths",
@@ -23,10 +23,11 @@
     "weapon.crit",
     "weapon.spd",
     "armour.hp",
-    "armour.def"
+    "armour.def",
+    "resistances.death_blow"
    ],
-   "used_by": "heroes.stat_a, heroes.stat_b",
-   "fallback": "heroes.fallback_a / fallback_b",
+   "used_by": "heroes.stat_*, hp, dodge, deathblow",
+   "fallback": "heroes.fallback_*",
    "verified": "headless"
   },
   {
@@ -42,7 +43,7 @@
     "image"
    ],
    "used_by": "atlas",
-   "fallback": "class initial drawn on a framed card",
+   "fallback": "listing search for *portrait_roster*.png, else drawn initial",
    "verified": "headless"
   },
   {
@@ -56,7 +57,23 @@
     "image"
    ],
    "used_by": "atlas",
-   "fallback": "dark gradient background",
+   "fallback": "plain dark card",
+   "verified": "headless"
+  },
+  {
+   "key": "monster_info",
+   "paths": [
+    "monsters/{family}/{family}_A/{family}_A.info.darkest",
+    "monsters/{family}/{family}.info.darkest"
+   ],
+   "parse": "monster_info",
+   "fields": [
+    "stats.hp",
+    "skill.dmg_min",
+    "skill.dmg_max"
+   ],
+   "used_by": "monsters",
+   "fallback": "monsters.fallback_*",
    "verified": "headless"
   },
   {
@@ -64,14 +81,29 @@
    "paths": [
     "dungeons/{area}/{area}.corridor_wall.{n}.png",
     "dungeons/{area}/{area}.corridor_wall_{n}.png",
-    "dungeons/{area}/{area}.corridor_wall.0{n}.png"
+    "dungeons/{area}/{area}.room_wall.{n}.png"
    ],
    "parse": "png",
    "fields": [
     "image"
    ],
-   "used_by": "areas (backdrop)",
-   "fallback": "swirling background in the area's colours only",
+   "used_by": "areas (backdrop per blind)",
+   "fallback": "listing of dungeons/<area>, else area colours only",
+   "verified": "headless"
+  },
+  {
+   "key": "hamlet",
+   "paths": [
+    "campaign/town/town_bg.png",
+    "campaign/town/hamlet_bg.png",
+    "campaign/town/town.png"
+   ],
+   "parse": "png",
+   "fields": [
+    "image"
+   ],
+   "used_by": "shop backdrop",
+   "fallback": "widest *.png under campaign/town found by listing, else dark gradient",
    "verified": "headless"
   }
  ]
