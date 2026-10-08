@@ -23,7 +23,7 @@ A [lovely-injector](https://github.com/ethangreen-dev/lovely-injector) mod for B
 - `tools/preflight.py` lays the sheets over each other and the code, and lists empty cells, broken references and unimplemented rows. Run it before every build.
 - `mod/DarkestDeck/`: the mod as installed (`lovely.toml`, `ddeck/core.lua`). It uses one lovely patch, a copy-append to `main.lua`; everything else wraps Balatro functions at runtime.
 - `tests/run.lua`: headless tests with a stubbed Balatro (`luajit tests/run.lua`). `tests/atlas/`: renders the hero card art in real LÖVE 11.5 (`xvfb-run love tests/atlas "$PWD"`).
-- `tools/package.py`: builds `dist/DarkestDeck-<version>.zip`. `melty.json` is the Melty install recipe.
+- `tools/package.py`: builds `dist/DarkestDeck-<version>.zip`. `design/melty.draft.json` is the validated Melty install recipe (moves to `melty.json` at the root once publishing is agreed).
 
 ```
 python3 tools/gen.py && python3 tools/preflight.py && luajit tests/run.lua && python3 tools/package.py

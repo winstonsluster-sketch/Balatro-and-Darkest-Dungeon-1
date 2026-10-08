@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "mode": "installed",
+  "games": [
+    {
+      "slug": "balatro",
+      "role": "primary"
+    },
+    {
+      "slug": "darkest-dungeon",
+      "role": "companion"
+    }
+  ],
+  "components": [
+    {
+      "id": "main",
+      "fileName": "DarkestDeck-*.zip",
+      "label": "Darkest Deck",
+      "kind": "main",
+      "required": true
+    }
+  ],
+  "requirements": [
+    {
+      "kind": "loader",
+      "id": "lovely"
+    }
+  ],
+  "mappings": [
+    {
+      "component": "main",
+      "from": "",
+      "to": "{appdata}/Balatro/Mods/DarkestDeck"
+    }
+  ],
+  "launch": {
+    "kind": "game"
+  },
+  "settings": [
+    {
+      "file": "{appdata}/Balatro/Mods/DarkestDeck/companion.cfg",
+      "set": {
+        "DD_PATH": "{game:darkest-dungeon}"
+      }
+    }
+  ]
+}
