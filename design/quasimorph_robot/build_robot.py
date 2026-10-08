@@ -9,10 +9,10 @@ GN=[H(c) for c in '0b2b13 10381a 2a461b 465e24'.split()]
 OR=H('c27a2d'); RD=[H(c) for c in '380b04 701508 e02a11'.split()]
 P={i:Image.open(f'{D}n{i}.png').convert('RGBA') for i in range(1,6)}
 def crop(im): return im.crop(im.getbbox())
-head=crop(P[2]); yoke=crop(P[1]); torso=crop(P[4]); foot=crop(P[5])
-armR=crop(P[3].rotate(-90,expand=True)); armL=ImageOps.mirror(armR)
+head=crop(P[2]); torso=crop(P[4])
+arm=crop(P[1].rotate(90,expand=True)); leg=crop(P[3].rotate(-90,expand=True)); pad=crop(P[5])
 
-W,Hh=84,124
+W,Hh=70,100
 cv=Image.new('RGBA',(W,Hh)); px=cv.load()
 
 def layer_draw(pix):
@@ -156,34 +156,25 @@ def shin(cx,y0,h,side):
         for x in range(r-3,r): pix[(x,y0+k)]=GR[0]
     return pix
 
-# ---------- assemble ----------
-cx=41
-yoke_x,yoke_y=21,24
-head_x,head_y=33,9
-torso_x,torso_y=31,35
-layer_draw(neck(cx,head_y+14,yoke_y+10-(head_y+14)))
-layer_draw(spine(cx,52,10))
-legs=[(-1,cx-6),(1,cx+5)]
-for side,lx in legs:
-    kx=lx+side*3
-    layer_draw(thigh(lx,64,17,side))
-    layer_draw(joint(kx,82,3))
-    layer_draw(shin(kx,84,15,side))
-    layer_draw(kneecap(kx,80))
-    layer_draw(cable([(lx-side*2,66+j) for j in range(6)]+[(lx-side*1,72+j) for j in range(3)],0))
-# feet: toes point outward
-fx=cx-6-3+(-1)*2; sprite(foot,fx-7,96)
-sprite(ImageOps.mirror(foot),cx+5+3+2-7,96)
-layer_draw(joint(cx-8,62,3)); layer_draw(joint(cx+7,62,3))
-layer_draw(pelvis(cx,58))
-sprite(armL,yoke_x-9,yoke_y+5); sprite(armR,yoke_x+30,yoke_y+5)
+cx=35
+torso_x,torso_y=cx-10,24
+head_x,head_y=cx-10,2
+layer_draw(neck(cx,head_y+15,torso_y+5-(head_y+15)))
+layer_draw(spine(cx,41,10))
+sprite(leg,cx-18,52)                      # long toe points outward
+sprite(ImageOps.mirror(leg),cx,52)
+layer_draw(joint(cx-8,54,3)); layer_draw(joint(cx+8,54,3))
+layer_draw(pelvis(cx,48))
+sprite(ImageOps.mirror(arm),cx-25,torso_y+2)
+sprite(arm,cx+9,torso_y+2)
 sprite(torso,torso_x,torso_y)
-sprite(yoke,yoke_x,yoke_y)
 sprite(head,head_x,head_y)
-layer_draw(cable([(cx+5,53),(cx+6,54),(cx+6,55),(cx+6,56),(cx+5,57)]))
-layer_draw(cable([(cx-6,52),(cx-7,53),(cx-7,54),(cx-6,55)],0))
+sprite(pad,cx-24,torso_y-4)
+sprite(ImageOps.mirror(pad),cx+8,torso_y-4)
+layer_draw(cable([(cx+5,42),(cx+6,43),(cx+6,44),(cx+6,45),(cx+5,46)]))
+layer_draw(cable([(cx-6,42),(cx-7,43),(cx-7,44),(cx-6,45)],0))
 out=crop(cv); o=Image.new('RGBA',(out.width+2,out.height+2)); o.alpha_composite(out,(1,1))
-o.save(D+'robot2_1x.png')
+o.save(D+'robot3_1x.png')
 bg=Image.new('RGBA',o.size,(200,200,200,255)); bg.alpha_composite(o)
-bg.resize((o.width*6,o.height*6),Image.NEAREST).save(D+'preview2.png')
+bg.resize((o.width*6,o.height*6),Image.NEAREST).save(D+'preview3.png')
 print(o.size)
