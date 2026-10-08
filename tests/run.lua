@@ -53,6 +53,13 @@ function Card:juice_up() end
 function Card:remove() self.removed = true end
 Back = {}
 function Back:apply_to_run() end
+local bg_args
+function ease_background_colour(args) bg_args = args end
+Sprite = {}
+local sprite_draws = 0
+function Sprite:draw() sprite_draws = sprite_draws + 1 end
+local game_draws = 0
+function Game:draw() game_draws = game_draws + 1 end
 
 local function new_card(center)
   return setmetatable({ config = { center = center }, ability = { extra = { stress = 0, state_rounds = 0 } },
@@ -194,6 +201,32 @@ check("parser missing armour", p["armour.hp"] == nil)
 -- 14. cfg parsing (what Melty writes)
 local cfg = DD.parse_cfg('DD_PATH="D:/Games/Steam/steamapps/common/DarkestDungeon"\r\nX=1\n')
 check("cfg DD_PATH", cfg.DD_PATH == "D:/Games/Steam/steamapps/common/DarkestDungeon")
+
+-- 15. the look
+G.GAME.round_resets = { ante = 1 }
+check("ante 1 is the Ruins", DD.current_area().key == "ruins")
+G.GAME.round_resets.ante = 4
+check("ante 4 is the Warrens", DD.current_area().key == "warrens")
+G.GAME.round_resets.ante = 12
+check("ante 12 is the Darkest Dungeon", DD.current_area().key == "darkest")
+G.GAME.round_resets.ante = 5
+ease_background_colour({ new_colour = { 1, 0, 0, 1 }, delay = 2 })
+check("background repainted in Weald colours", bg_args and math.abs(bg_args.new_colour[1] - 0x4C / 255) < 1e-6 and bg_args.delay == 2)
+check("contrast from sheet", bg_args.contrast == 1.2)
+local paths = DD.backdrop_paths(DD.D.areas.cove)
+check("backdrop paths templated", paths[1] == "dungeons/cove/cove.corridor_wall.1.png", paths[1])
+check("backdrop path count", #paths == 12 * 3)
+-- torchlight follows party stress
+G.STAGES = { RUN = 2 }; G.STAGE = 2
+G.jokers.cards = { new_card(G.P_CENTERS.j_ddeck_crusader), new_card(G.P_CENTERS.j_ddeck_vestal) }
+check("calm party = torch_min", math.abs(DD.torch_alpha() - DD.C.torch_min) < 1e-9)
+G.jokers.cards[1].ability.extra.stress = 100; G.jokers.cards[2].ability.extra.stress = 100
+check("stressed party = torch_max", math.abs(DD.torch_alpha() - DD.C.torch_max) < 1e-9)
+G.STAGE = 1
+check("menus = torch_min", math.abs(DD.torch_alpha() - DD.C.torch_min) < 1e-9)
+-- draw hooks call through even without love (pcall catches)
+Sprite.draw({}); Game.draw(G)
+check("draw hooks call originals", sprite_draws == 1 and game_draws == 1)
 
 print(string.format("%d passed, %d failed", passes, fails))
 os.exit(fails == 0 and 0 or 1)

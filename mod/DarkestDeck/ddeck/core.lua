@@ -4,7 +4,7 @@
 
 local D = require("ddeck.data")
 
-local DDeck = { D = D, C = {}, version = "0.1.0", stats = {}, images = {}, installed = false }
+local DDeck = { D = D, C = {}, version = "0.2.0", stats = {}, images = {}, installed = false }
 _G.DDeck = DDeck
 local C = DDeck.C
 for k, row in pairs(D.constants) do C[k] = row.value end
@@ -636,6 +636,120 @@ function DDeck.loc_vars(card)
 end
 
 ---------------------------------------------------------------------------
+-- The look: dungeon area per Ante, its colours, its corridor art, torchlight
+---------------------------------------------------------------------------
+local function colour(c) return { hex(c, 1) } end
+
+function DDeck.current_area()
+  local ante = (G and G.GAME and G.GAME.round_resets and G.GAME.round_resets.ante) or 0
+  for _, key in ipairs(D.areas_order) do
+    local a = D.areas[key]
+    if ante >= a.ante_from and ante <= a.ante_to then return a end
+  end
+  return D.areas[D.areas_order[1]]
+end
+
+-- All candidate corridor paths for an area, in the order they are tried.
+function DDeck.backdrop_paths(area)
+  local out = {}
+  for n = 1, C.corridor_tiles do
+    for _, tmpl in ipairs(D.companion_files.area_backdrop.paths) do
+      out[#out + 1] = (tmpl:gsub("{area}", area.dd_folder):gsub("{n}", tostring(n)))
+    end
+  end
+  return out
+end
+
+-- Loads every corridor image found for an area (once), so the backdrop can tile them.
+function DDeck.load_backdrops(area)
+  DDeck.backdrops = DDeck.backdrops or {}
+  if DDeck.backdrops[area.key] then return DDeck.backdrops[area.key] end
+  local list, seen = {}, {}
+  DDeck.load_companion()
+  if DDeck.dd_path then
+    for _, rel in ipairs(DDeck.backdrop_paths(area)) do
+      if not seen[rel] and #list < C.corridor_tiles then
+        seen[rel] = true
+        local img = load_image(DDeck.dd_path .. "/" .. rel)
+        if img then list[#list + 1] = img end
+      end
+    end
+  end
+  log(area.name .. ": " .. #list .. " corridor image(s) found in dungeons/" .. area.dd_folder)
+  DDeck.backdrops[area.key] = list
+  return list
+end
+
+function DDeck.draw_backdrop()
+  local area = DDeck.current_area()
+  local imgs = DDeck.load_backdrops(area)
+  if #imgs == 0 then return end
+  local g = love.graphics
+  local canvas = g.getCanvas()
+  local W, H
+  if canvas then W, H = canvas:getDimensions() else W, H = g.getDimensions() end
+  g.push("all")
+  g.origin()
+  g.setShader()
+  g.setColor(1, 1, 1, C.backdrop_alpha)
+  -- a corridor: the area's wall images side by side, scaled to the screen's height
+  local x, i = 0, 1
+  while x < W do
+    local img = imgs[i]
+    local s = H / img:getHeight()
+    g.draw(img, x, 0, 0, s, s)
+    x = x + img:getWidth() * s
+    i = i % #imgs + 1
+  end
+  g.pop()
+  if not DDeck.backdrop_logged then DDeck.backdrop_logged = true; log("backdrop drawn (" .. area.name .. ")") end
+end
+
+-- Torchlight: the vignette darkens as the party's average Stress rises.
+function DDeck.torch_alpha()
+  local heroes = (G and G.jokers and G.STAGE == (G.STAGES and G.STAGES.RUN)) and heroes_in_play() or {}
+  if #heroes == 0 then return C.torch_min end
+  local total = 0
+  for _, c in ipairs(heroes) do total = total + extra(c).stress end
+  local t = math.min(1, (total / #heroes) / C.resolve_at)
+  return C.torch_min + (C.torch_max - C.torch_min) * t
+end
+
+function DDeck.draw_torchlight()
+  local g = love.graphics
+  if not DDeck.vignette then
+    local n = 256
+    local id = love.image.newImageData(n, n)
+    id:mapPixel(function(x, y)
+      local dx, dy = (x - n / 2) / (n / 2), (y - n / 2) / (n / 2)
+      local d = math.min(1, math.sqrt(dx * dx + dy * dy))
+      return 0.03, 0.01, 0.0, d ^ 2.2
+    end)
+    DDeck.vignette = g.newImage(id)
+  end
+  local W, H = g.getDimensions()
+  g.push("all")
+  g.origin()
+  g.setShader()
+  g.setColor(1, 1, 1, DDeck.torch_alpha())
+  g.draw(DDeck.vignette, 0, 0, 0, W / 256, H / 256)
+  g.pop()
+end
+
+-- Replaces whatever colours Balatro asks for with the current area's.
+function DDeck.area_colours(args)
+  local a = DDeck.current_area()
+  args = args or {}
+  local out = {}
+  for k, v in pairs(args) do out[k] = v end
+  out.new_colour = colour(a.colour_light)
+  out.special_colour = colour(a.colour_main)
+  out.tertiary_colour = colour(a.colour_dark)
+  out.contrast = a.contrast
+  return out
+end
+
+---------------------------------------------------------------------------
 -- Hooks (see design/sheets/hooks.json)
 ---------------------------------------------------------------------------
 local function resolve_path(path)
@@ -736,7 +850,34 @@ function DDeck.install()
     end
   end) and 1 or 0)
 
-  log("v" .. DDeck.version .. " installed " .. ok .. "/8 hooks")
+  ok = ok + (wrap("ease_background_colour", function(orig)
+    return function(args, ...)
+      local s, v = pcall(DDeck.area_colours, args)
+      return orig(s and v or args, ...)
+    end
+  end) and 1 or 0)
+
+  ok = ok + (wrap("Sprite.draw", function(orig)
+    return function(self, ...)
+      local r = orig(self, ...)
+      if G and self == G.SPLASH_BACK and G.STAGE == (G.STAGES and G.STAGES.RUN) then
+        local s, e = pcall(DDeck.draw_backdrop)
+        if not s and not DDeck.backdrop_err then DDeck.backdrop_err = true; log("backdrop failed: " .. tostring(e)) end
+      end
+      return r
+    end
+  end) and 1 or 0)
+
+  ok = ok + (wrap("Game.draw", function(orig)
+    return function(self, ...)
+      local r = orig(self, ...)
+      local s, e = pcall(DDeck.draw_torchlight)
+      if not s and not DDeck.torch_err then DDeck.torch_err = true; log("torchlight failed: " .. tostring(e)) end
+      return r
+    end
+  end) and 1 or 0)
+
+  log("v" .. DDeck.version .. " installed " .. ok .. "/11 hooks")
 end
 
 return DDeck

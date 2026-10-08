@@ -1,16 +1,97 @@
 {
-  "sheet": "hooks",
-  "about": "Every place the mod touches Balatro. Only one lovely patch (a copy-append to main.lua); everything else wraps a Balatro function at runtime, so a game update that moves code around can't break a pattern match.",
-  "columns": ["key", "kind", "target", "purpose", "verified"],
-  "rows": [
-    {"key": "bootstrap",          "kind": "lovely_copy_append", "target": "main.lua",                          "purpose": "Load the mod's Lua after all game files, before love.load runs", "verified": "headless"},
-    {"key": "item_prototypes",    "kind": "wrap_method",        "target": "Game.init_item_prototypes",         "purpose": "Add hero Jokers and the Expedition Deck to G.P_CENTERS and their pools", "verified": "headless"},
-    {"key": "localization",       "kind": "wrap_global",        "target": "init_localization",                 "purpose": "Add names and descriptions before Balatro parses them", "verified": "headless"},
-    {"key": "render_settings",    "kind": "wrap_method",        "target": "Game.set_render_settings",          "purpose": "Build the hero atlas from Darkest Dungeon portraits", "verified": "headless"},
-    {"key": "set_sprites",        "kind": "wrap_method",        "target": "Card.set_sprites",                  "purpose": "Show a hero's portrait (and afflicted/virtuous frame)", "verified": "headless"},
-    {"key": "calculate_joker",    "kind": "wrap_method",        "target": "Card.calculate_joker",              "purpose": "Hero scoring and Stress", "verified": "headless"},
-    {"key": "ability_table",      "kind": "wrap_method",        "target": "Card.generate_UIBox_ability_table", "purpose": "Mark which hero's tooltip is being built", "verified": "headless"},
-    {"key": "card_ui",            "kind": "wrap_global",        "target": "generate_card_ui",                  "purpose": "Fill the hero tooltip numbers (stat, Stress, state)", "verified": "headless"},
-    {"key": "apply_to_run",       "kind": "wrap_method",        "target": "Back.apply_to_run",                 "purpose": "Expedition Deck hands out the party at run start", "verified": "headless"}
-  ]
+ "sheet": "hooks",
+ "about": "Every place the mod touches Balatro. Only one lovely patch (a copy-append to main.lua); everything else wraps a Balatro function at runtime, so a game update that moves code around can't break a pattern match.",
+ "columns": [
+  "key",
+  "kind",
+  "target",
+  "purpose",
+  "verified"
+ ],
+ "rows": [
+  {
+   "key": "bootstrap",
+   "kind": "lovely_copy_append",
+   "target": "main.lua",
+   "purpose": "Load the mod's Lua after all game files, before love.load runs",
+   "verified": "headless"
+  },
+  {
+   "key": "item_prototypes",
+   "kind": "wrap_method",
+   "target": "Game.init_item_prototypes",
+   "purpose": "Add hero Jokers and the Expedition Deck to G.P_CENTERS and their pools",
+   "verified": "headless"
+  },
+  {
+   "key": "localization",
+   "kind": "wrap_global",
+   "target": "init_localization",
+   "purpose": "Add names and descriptions before Balatro parses them",
+   "verified": "headless"
+  },
+  {
+   "key": "render_settings",
+   "kind": "wrap_method",
+   "target": "Game.set_render_settings",
+   "purpose": "Build the hero atlas from Darkest Dungeon portraits",
+   "verified": "headless"
+  },
+  {
+   "key": "set_sprites",
+   "kind": "wrap_method",
+   "target": "Card.set_sprites",
+   "purpose": "Show a hero's portrait (and afflicted/virtuous frame)",
+   "verified": "headless"
+  },
+  {
+   "key": "calculate_joker",
+   "kind": "wrap_method",
+   "target": "Card.calculate_joker",
+   "purpose": "Hero scoring and Stress",
+   "verified": "headless"
+  },
+  {
+   "key": "ability_table",
+   "kind": "wrap_method",
+   "target": "Card.generate_UIBox_ability_table",
+   "purpose": "Mark which hero's tooltip is being built",
+   "verified": "headless"
+  },
+  {
+   "key": "card_ui",
+   "kind": "wrap_global",
+   "target": "generate_card_ui",
+   "purpose": "Fill the hero tooltip numbers (stat, Stress, state)",
+   "verified": "headless"
+  },
+  {
+   "key": "apply_to_run",
+   "kind": "wrap_method",
+   "target": "Back.apply_to_run",
+   "purpose": "Expedition Deck hands out the party at run start",
+   "verified": "headless"
+  },
+  {
+   "key": "background_colour",
+   "kind": "wrap_global",
+   "target": "ease_background_colour",
+   "purpose": "Repaint Balatro's background in the current dungeon area's colours",
+   "verified": "headless"
+  },
+  {
+   "key": "backdrop",
+   "kind": "wrap_method",
+   "target": "Sprite.draw",
+   "purpose": "Draw the area's corridor art right after the background sprite (G.SPLASH_BACK), under the cards",
+   "verified": "headless"
+  },
+  {
+   "key": "torchlight",
+   "kind": "wrap_method",
+   "target": "Game.draw",
+   "purpose": "Draw the torchlight vignette over the finished frame",
+   "verified": "headless"
+  }
+ ]
 }

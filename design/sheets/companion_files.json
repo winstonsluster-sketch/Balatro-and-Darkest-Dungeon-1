@@ -1,14 +1,78 @@
 {
-  "sheet": "companion_files",
-  "about": "What the mod reads from the player's Darkest Dungeon install (folder handed over by Melty in companion.cfg as DD_PATH). Nothing here is shipped.",
-  "columns": ["key", "paths", "parse", "fields", "used_by", "fallback", "verified"],
-  "rows": [
-    {"key": "hero_info", "paths": ["heroes/{class}/{class}.info.darkest"], "parse": "info_darkest",
-     "fields": ["weapon.dmg_min", "weapon.dmg_max", "weapon.crit", "weapon.spd", "armour.hp", "armour.def"],
-     "used_by": "heroes.stat_a, heroes.stat_b", "fallback": "heroes.fallback_a / fallback_b", "verified": "headless"},
-    {"key": "hero_portrait", "paths": ["heroes/{class}/{class}_A/{class}_portrait_roster.png", "heroes/{class}/{class}_portrait_roster.png", "heroes/{class}/{class}_A/{class}_A_portrait_roster.png", "heroes/{class}/{class}_0/{class}_portrait_roster.png"], "parse": "png",
-     "fields": ["image"], "used_by": "atlas", "fallback": "class initial drawn on a framed card", "verified": "headless"},
-    {"key": "hero_header", "paths": ["heroes/{class}/{class}_A/{class}_guild_header.png", "heroes/{class}/{class}_guild_header.png"], "parse": "png",
-     "fields": ["image"], "used_by": "atlas", "fallback": "dark gradient background", "verified": "headless"}
-  ]
+ "sheet": "companion_files",
+ "about": "What the mod reads from the player's Darkest Dungeon install (folder handed over by Melty in companion.cfg as DD_PATH). Nothing here is shipped.",
+ "columns": [
+  "key",
+  "paths",
+  "parse",
+  "fields",
+  "used_by",
+  "fallback",
+  "verified"
+ ],
+ "rows": [
+  {
+   "key": "hero_info",
+   "paths": [
+    "heroes/{class}/{class}.info.darkest"
+   ],
+   "parse": "info_darkest",
+   "fields": [
+    "weapon.dmg_min",
+    "weapon.dmg_max",
+    "weapon.crit",
+    "weapon.spd",
+    "armour.hp",
+    "armour.def"
+   ],
+   "used_by": "heroes.stat_a, heroes.stat_b",
+   "fallback": "heroes.fallback_a / fallback_b",
+   "verified": "headless"
+  },
+  {
+   "key": "hero_portrait",
+   "paths": [
+    "heroes/{class}/{class}_A/{class}_portrait_roster.png",
+    "heroes/{class}/{class}_portrait_roster.png",
+    "heroes/{class}/{class}_A/{class}_A_portrait_roster.png",
+    "heroes/{class}/{class}_0/{class}_portrait_roster.png"
+   ],
+   "parse": "png",
+   "fields": [
+    "image"
+   ],
+   "used_by": "atlas",
+   "fallback": "class initial drawn on a framed card",
+   "verified": "headless"
+  },
+  {
+   "key": "hero_header",
+   "paths": [
+    "heroes/{class}/{class}_A/{class}_guild_header.png",
+    "heroes/{class}/{class}_guild_header.png"
+   ],
+   "parse": "png",
+   "fields": [
+    "image"
+   ],
+   "used_by": "atlas",
+   "fallback": "dark gradient background",
+   "verified": "headless"
+  },
+  {
+   "key": "area_backdrop",
+   "paths": [
+    "dungeons/{area}/{area}.corridor_wall.{n}.png",
+    "dungeons/{area}/{area}.corridor_wall_{n}.png",
+    "dungeons/{area}/{area}.corridor_wall.0{n}.png"
+   ],
+   "parse": "png",
+   "fields": [
+    "image"
+   ],
+   "used_by": "areas (backdrop)",
+   "fallback": "swirling background in the area's colours only",
+   "verified": "headless"
+  }
+ ]
 }

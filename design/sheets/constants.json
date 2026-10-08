@@ -1,15 +1,110 @@
 {
-  "sheet": "constants",
-  "about": "Stress rules, modelled on Darkest Dungeon's: stress builds, at 100 the hero's resolve is tested, at 200 an afflicted hero suffers a heart attack.",
-  "columns": ["key", "value", "unit", "used_by", "text", "verified"],
-  "rows": [
-    {"key": "discard_stress",  "value": 3,   "unit": "stress", "used_by": "on_discard",   "text": "Every discard adds Stress to every hero", "verified": "headless"},
-    {"key": "camp_relief",     "value": 15,  "unit": "stress", "used_by": "on_round_end", "text": "End of round: every hero loses this much Stress (camping)", "verified": "headless"},
-    {"key": "resolve_at",      "value": 100, "unit": "stress", "used_by": "add_stress",   "text": "Stress at which a hero's resolve is tested", "verified": "headless"},
-    {"key": "heart_attack_at", "value": 200, "unit": "stress", "used_by": "add_stress",   "text": "An afflicted hero dies (the Joker is destroyed) at this Stress", "verified": "headless"},
-    {"key": "virtue_chance",   "value": 25,  "unit": "percent","used_by": "resolve",      "text": "Chance the resolve test gives a Virtue instead of an Affliction (Darkest Dungeon's base is 25%)", "verified": "headless"},
-    {"key": "virtue_reset",    "value": 40,  "unit": "stress", "used_by": "resolve",      "text": "A virtuous hero's Stress drops to this", "verified": "headless"},
-    {"key": "virtue_rounds",   "value": 1,   "unit": "rounds", "used_by": "on_round_end", "text": "A Virtue lasts this many rounds", "verified": "headless"},
-    {"key": "clear_below",     "value": 50,  "unit": "stress", "used_by": "on_round_end", "text": "An Affliction clears once Stress falls below this", "verified": "headless"}
-  ]
+ "sheet": "constants",
+ "about": "Stress rules, modelled on Darkest Dungeon's: stress builds, at 100 the hero's resolve is tested, at 200 an afflicted hero suffers a heart attack.",
+ "columns": [
+  "key",
+  "value",
+  "unit",
+  "used_by",
+  "text",
+  "verified"
+ ],
+ "rows": [
+  {
+   "key": "discard_stress",
+   "value": 3,
+   "unit": "stress",
+   "used_by": "on_discard",
+   "text": "Every discard adds Stress to every hero",
+   "verified": "headless"
+  },
+  {
+   "key": "camp_relief",
+   "value": 15,
+   "unit": "stress",
+   "used_by": "on_round_end",
+   "text": "End of round: every hero loses this much Stress (camping)",
+   "verified": "headless"
+  },
+  {
+   "key": "resolve_at",
+   "value": 100,
+   "unit": "stress",
+   "used_by": "add_stress",
+   "text": "Stress at which a hero's resolve is tested",
+   "verified": "headless"
+  },
+  {
+   "key": "heart_attack_at",
+   "value": 200,
+   "unit": "stress",
+   "used_by": "add_stress",
+   "text": "An afflicted hero dies (the Joker is destroyed) at this Stress",
+   "verified": "headless"
+  },
+  {
+   "key": "virtue_chance",
+   "value": 25,
+   "unit": "percent",
+   "used_by": "resolve",
+   "text": "Chance the resolve test gives a Virtue instead of an Affliction (Darkest Dungeon's base is 25%)",
+   "verified": "headless"
+  },
+  {
+   "key": "virtue_reset",
+   "value": 40,
+   "unit": "stress",
+   "used_by": "resolve",
+   "text": "A virtuous hero's Stress drops to this",
+   "verified": "headless"
+  },
+  {
+   "key": "virtue_rounds",
+   "value": 1,
+   "unit": "rounds",
+   "used_by": "on_round_end",
+   "text": "A Virtue lasts this many rounds",
+   "verified": "headless"
+  },
+  {
+   "key": "clear_below",
+   "value": 50,
+   "unit": "stress",
+   "used_by": "on_round_end",
+   "text": "An Affliction clears once Stress falls below this",
+   "verified": "headless"
+  },
+  {
+   "key": "torch_min",
+   "value": 0.25,
+   "unit": "alpha",
+   "used_by": "torch_alpha",
+   "text": "Vignette darkness with a calm party (and outside runs)",
+   "verified": "headless"
+  },
+  {
+   "key": "torch_max",
+   "value": 0.75,
+   "unit": "alpha",
+   "used_by": "torch_alpha",
+   "text": "Vignette darkness when the party's average Stress reaches resolve_at",
+   "verified": "headless"
+  },
+  {
+   "key": "backdrop_alpha",
+   "value": 0.45,
+   "unit": "alpha",
+   "used_by": "draw_backdrop",
+   "text": "How strongly the dungeon corridor art shows over the swirling background",
+   "verified": "headless"
+  },
+  {
+   "key": "corridor_tiles",
+   "value": 12,
+   "unit": "files",
+   "used_by": "load_backdrops",
+   "text": "How many numbered corridor_wall images to look for per area",
+   "verified": "headless"
+  }
+ ]
 }

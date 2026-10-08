@@ -15,6 +15,10 @@ A [lovely-injector](https://github.com/ethangreen-dev/lovely-injector) mod for B
   - 25%: a **Virtue**. *Stalwart* gives X1.5 Mult and no Stress gain; *Powerful* gives X2 Mult. It lasts one round.
   - An afflicted hero who reaches **200** has a **heart attack** and dies (the Joker is destroyed).
 - **Camping**: at the end of each round every hero loses 15 Stress; an Affliction clears below 50.
+- **Darkest Dungeon look**: Balatro's table becomes a Darkest Dungeon expedition.
+  - The backdrop is the real corridor art from your install, moving from the Ruins (Antes 1–2) to the Warrens, the Weald, the Cove, and then the Darkest Dungeon itself (Ante 9+).
+  - Balatro's swirling background takes each area's colours.
+  - A torchlight vignette closes in as your party's Stress rises.
 - **Expedition Deck**: start a run with the whole party. Heroes also appear in the shop (Uncommon) on any deck.
 
 ## How it's built
@@ -32,12 +36,13 @@ python3 tools/gen.py && python3 tools/preflight.py && luajit tests/run.lua && py
 ## Where Darkest Dungeon is read from
 Melty writes `DD_PATH=<your Darkest Dungeon folder>` into `Mods/DarkestDeck/companion.cfg` before every Play. The mod then reads:
 - `heroes/<class>/<class>.info.darkest` for stats;
-- `heroes/<class>/<class>_A/<class>_portrait_roster.png` and the class's guild header for art.
+- `heroes/<class>/<class>_A/<class>_portrait_roster.png` and the class's guild header for art;
+- `dungeons/<area>/<area>.corridor_wall.<n>.png` for the backdrop.
 
 If something can't be read, the mod falls back to built-in stats and a drawn initial, and logs why in `%AppData%/Balatro/darkestdeck.log`.
 
 ## Status
-v0.1.0. Built and tested headless (47 tests) plus a real-LÖVE art render. **Not yet tested inside the running game.**
+v0.2.0. Built and tested headless (58 tests) plus real-LÖVE renders of the card art and the look (`xvfb-run love tests/look "$PWD" <ante> <stress>`). **Not yet tested inside the running game.**
 
 ## Credits
 - Balatro by LocalThunk / Playstack. Darkest Dungeon by Red Hook Studios. You need your own copy of both.

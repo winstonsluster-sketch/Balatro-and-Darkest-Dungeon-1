@@ -49,6 +49,16 @@ def main():
     if len(set(xs)) != len(xs): problems.append("heroes.atlas_x: duplicates")
     kinds = {r["kind"] for r in s["states"]["rows"]}
     if kinds != {"affliction","virtue"}: problems.append(f"states.kind: need affliction and virtue, have {kinds}")
+    areas = sorted(s["areas"]["rows"], key=lambda r: r["ante_from"])
+    nxt = 0
+    for a in areas:
+        if a["ante_from"] != nxt: problems.append(f"areas.{a['key']}: antes {nxt}..{a['ante_from']-1} have no area")
+        if a["ante_to"] < a["ante_from"]: problems.append(f"areas.{a['key']}: ante_to before ante_from")
+        nxt = a["ante_to"] + 1
+        for c in ("colour_main","colour_light","colour_dark"):
+            if not re.fullmatch(r"#[0-9A-Fa-f]{6}", a[c]): problems.append(f"areas.{a['key']}.{c}: not #RRGGBB")
+    bd = next((r for r in s["companion_files"]["rows"] if r["key"]=="area_backdrop"), None)
+    if not bd or not all("{area}" in p and "{n}" in p for p in bd["paths"]): problems.append("companion_files.area_backdrop: paths need {area} and {n}")
     # 3. implemented in code
     for r in s["states"]["rows"]:
         if not re.search(r"EFFECT\.%s\b" % r["effect"], core): problems.append(f"states.{r['key']}.effect: EFFECT.{r['effect']} not implemented")

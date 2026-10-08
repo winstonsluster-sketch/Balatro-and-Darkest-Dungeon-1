@@ -8,3 +8,9 @@
 - DD formats come from the universal-modder field note `knowledge/games/darkest-dungeon/data-mod-randomizer.md`. Hero class names live in compiled `.loc2`, so names are hard-coded in the sheet.
 - Portrait path `heroes/<cls>/<cls>_A/<cls>_portrait_roster.png` is unconfirmed. The code probes 4 candidates and logs which one hit.
 - Next: run on the user's PC with both games installed and check `%AppData%/Balatro/darkestdeck.log` for "installed 8/8 hooks", stats from the install, and portraits found.
+
+## 2026-10-08: v0.2.0 adds the Darkest Dungeon look (untested in game)
+- New `areas` sheet: Ruins/Warrens/Weald/Cove/Darkest per Ante.
+- Hooks: `ease_background_colour` (repaint), `Sprite.draw` (backdrop after `G.SPLASH_BACK`, run stage only), `Game.draw` (torchlight vignette).
+- Corridor file names follow the community pattern `dungeons/<area>/<area>.corridor_wall.<n>.png` (720x720). Unconfirmed: the log reports how many were found per area.
+- Music and sounds are not possible: Darkest Dungeon packs them in FMOD banks.
