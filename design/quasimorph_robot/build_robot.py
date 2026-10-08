@@ -1,160 +1,190 @@
-"""RealWare combat robot, head-on, built only from the source sprites' own pixels.
-Each posed segment samples the matching segment of a source sprite along its length and across
-its width (light side always upper-left), so streaks, speckle, seams, cables and joints are the
-source art. Recoloured brown->grey value for value at the end.
-usage: python3 build_robot.py <dir with n1..n5.png> <out dir>"""
+"""RealWare combat robot - head-on, combat guard, gritty lit pixel art.
+Forms are modelled as simple 3D primitives (capsules, spheres, beveled plates), lit by one light
+from the upper-left, then quantised to a small palette with a black silhouette outline.
+usage: python3 build_robot.py <out dir>"""
 import sys, math
-from PIL import Image, ImageOps
-SRC,OUT=sys.argv[1].rstrip('/')+'/',sys.argv[2].rstrip('/')+'/'
-def H(s): return tuple(int(s[i:i+2],16) for i in (0,2,4))+(255,)
-K=H('000000')
-BR=[H(c) for c in '261209 3d1f12 4f2c19 623921 704325 84512f aa6e46 cea173 e2cc98'.split()]
-BR_X=[H('502c1a'),H('8d5936')]
-GR=[H(c) for c in '110e0e 1d1717 261e1e 352d2d 514444'.split()]
-GN=[H(c) for c in '0b2b13 10381a 2a461b 465e24'.split()]
-OR=H('c27a2d'); RD=[H(c) for c in '380b04 701508 e02a11'.split()]
-def fam(c):
-    if c[3]==0: return None
-    if c==K: return 'k'
-    if c in BR or c in BR_X: return 'b'
-    if c in GR: return 'g'
-    return 'x'
-P={i:Image.open(f'{SRC}n{i}.png').convert('RGBA') for i in range(1,6)}
-def crop(im): return im.crop(im.getbbox())
-def twin(im):
-    """mirrored silhouette, source light direction restored inside every row run"""
-    M=ImageOps.mirror(im); w,h=im.size; m=M.load(); o=im.load(); out=M.copy(); q=out.load()
-    for y in range(h):
-        x=0
-        while x<w:
-            if m[x,y][3]==0: x+=1; continue
-            a=x
-            while x<w and m[x,y][3]: x+=1
-            b=x-1
-            for k in range(b-a+1):
-                src=o[w-1-b+k,y]; cur=m[a+k,y]
-                if fam(src)==fam(cur) and fam(cur) in ('b','g'): q[a+k,y]=src
-    return out
+import numpy as np
+from PIL import Image, ImageDraw
+OUT=sys.argv[1].rstrip('/')+'/'
+W,H=84,108
+def hx(s): return tuple(int(s[i:i+2],16) for i in (0,2,4))
+ARMOR=[hx(c) for c in '161313 211c1c 2c2626 383131 443c3c 524848 625757 766a67 8f8380 ad a19d'.replace('ad a19d','ada19d').split()]
+ARMOR+= [hx('cdc3bd'),hx('e6ded8')]
+METAL=[hx(c) for c in '0c0a0b 151214 1e1a1c 29242a 363038 4a4250 6a6272'.split()]
+RED=[hx(c) for c in '2a0805 4a0e07 701508 a01c0b e02a11 ff6a45'.split()]
+BLACK=(0,0,0)
 
-ARM=crop(P[1].rotate(90,expand=True))     # upright: shoulder top, elbow, forearm, fist bottom
-LEG=crop(P[3].rotate(-90,expand=True))    # upright: hip top, knee, shin, claw foot bottom
-PAD=crop(P[5]); HEAD=P[2]
+depth=np.full((H,W),-1e9); normal=np.zeros((H,W,3)); mat=np.zeros((H,W),dtype=int)-1
+pid=np.zeros((H,W),dtype=int)-1; paint=np.zeros((H,W),dtype=int)   # paint: 0 none, 1 groove, 2 lip, 3 logo, 4 eye
+_pid=[0]
+def put(x,y,z,n,m,p=None):
+    if 0<=x<W and 0<=y<H and z>depth[y,x]:
+        depth[y,x]=z; normal[y,x]=n; mat[y,x]=m; pid[y,x]=_pid[0] if p is None else p; paint[y,x]=0
+def nid(): _pid[0]+=1
 
-W,Hh=84,100
-cv=Image.new('RGBA',(W,Hh)); px=cv.load()
-
-def segment(src,r0,r1,Pp,Dp,width_scale=1.0):
-    """map source rows r0..r1 (upright, proximal at top) onto the posed segment Pp->Dp"""
-    ax,ay=Dp[0]-Pp[0],Dp[1]-Pp[1]; L=math.hypot(ax,ay); ax/=L; ay/=L
-    nx,ny=-ay,ax
-    if nx+ny<0: nx,ny=-nx,-ny                         # +n points away from the upper-left light
-    sw=src.width; sp=src.load(); half=sw/2*width_scale
-    xs=[Pp[0],Dp[0]]; ys=[Pp[1],Dp[1]]
-    for y in range(int(min(ys)-sw),int(max(ys)+sw)+1):
-        for x in range(int(min(xs)-sw),int(max(xs)+sw)+1):
-            dx,dy=x+0.5-Pp[0],y+0.5-Pp[1]
-            t=dx*ax+dy*ay; s=dx*nx+dy*ny
-            if not (0<=t<L) or not (-half<=s<half): continue
-            sx=int((s+half)/width_scale); sy=r0+int(t*(r1-r0)/L)
-            if 0<=sx<sw and r0<=sy<r1:
-                c=sp[sx,sy]
-                if c[3] and 0<=x<W and 0<=y<Hh: px[x,y]=c
-def paste(im,x,y): cv.alpha_composite(im,(x,y))
-def region_fill(src,rect,dst_box):
-    """fill a box by sampling a source rect (nearest), for plates the source set has no direct part for"""
-    sx0,sy0,sx1,sy1=rect; dx0,dy0,dx1,dy1=dst_box; sp=src.load()
-    out=Image.new('RGBA',(dx1-dx0,dy1-dy0)); op=out.load()
-    for y in range(dy1-dy0):
-        for x in range(dx1-dx0):
-            op[x,y]=sp[sx0+x*(sx1-sx0)//(dx1-dx0), sy0+y*(sy1-sy0)//(dy1-dy0)]
-    return out
-def shape(im,mask_fn):
-    q=im.load()
-    for y in range(im.height):
-        for x in range(im.width):
-            if not mask_fn(x,y): q[x,y]=(0,0,0,0)
-    return im
-def outline(im):
-    """1px black silhouette outline, as every source sprite has"""
-    q=im.load(); w,h=im.size; add=[]
-    for y in range(h):
-        for x in range(w):
-            if q[x,y][3]==0 and any(0<=x+dx<w and 0<=y+dy<h and q[x+dx,y+dy][3] for dx,dy in ((1,0),(-1,0),(0,1),(0,-1))):
-                add.append((x,y))
-    for p in add: q[p]=K
-    return im
+def capsule(P,D,r0,r1,z0,z1,m=0):
+    nid(); (px,py),(dx,dy)=P,D; L2=(dx-px)**2+(dy-py)**2
+    for y in range(int(min(py,dy)-max(r0,r1))-1,int(max(py,dy)+max(r0,r1))+2):
+        for x in range(int(min(px,dx)-max(r0,r1))-1,int(max(px,dx)+max(r0,r1))+2):
+            cx_,cy_=x+0.5,y+0.5
+            t=max(0,min(1,((cx_-px)*(dx-px)+(cy_-py)*(dy-py))/L2)) if L2 else 0.0
+            ax,ay=px+t*(dx-px),py+t*(dy-py); r=r0+(r1-r0)*t
+            ox,oy=cx_-ax,cy_-ay; d=math.hypot(ox,oy)
+            if d<r:
+                nz=math.sqrt(max(0,1-(d/r)**2)); s=d/r
+                n=np.array([ox/(d+1e-9)*s,oy/(d+1e-9)*s,nz])
+                put(x,y,z0+(z1-z0)*t+r*nz,n,m)
+def sphere(c,r,z,m=1): capsule(c,c,r,r,z,z,m)
+def plate(poly,z,thick,bevel,m=0,dome=0.0,grooves=(),bolts=()):
+    """flat-faced armour plate with a rounded bevel; normals from its height field"""
+    nid()
+    img=Image.new('L',(W,H)); ImageDraw.Draw(img).polygon(poly,fill=1); mask=np.array(img).astype(bool)
+    ys,xs=np.nonzero(mask)
+    if len(xs)==0: return
+    # distance to the plate edge (brute force on a small set)
+    edge=[(x,y) for x,y in zip(xs,ys) if not all(0<=x+dx<W and 0<=y+dy<H and mask[y+dy,x+dx] for dx,dy in ((1,0),(-1,0),(0,1),(0,-1)))]
+    E=np.array(edge,dtype=float)
+    hgt=np.full((H,W),np.nan)
+    cxm,cym=xs.mean(),ys.mean(); sx=max(1,(xs.max()-xs.min())/2); sy=max(1,(ys.max()-ys.min())/2)
+    for x,y in zip(xs,ys):
+        e=np.min(np.hypot(E[:,0]-x,E[:,1]-y))+0.5
+        prof=1.0 if e>=bevel else math.sqrt(max(0,1-(1-e/bevel)**2))
+        h=thick*prof - dome*(((x-cxm)/sx)**2+((y-cym)/sy)**2)
+        hgt[y,x]=h
+    for g in grooves:                                   # cut panel lines into the plate
+        for (x,y) in g:
+            if 0<=x<W and 0<=y<H and not np.isnan(hgt[y,x]): hgt[y,x]-=1.2
+    for (bx,by) in bolts:
+        if not np.isnan(hgt[by,bx]): hgt[by,bx]+=0.8
+    for x,y in zip(xs,ys):
+        def h(xx,yy): 
+            v=hgt[yy,xx] if 0<=xx<W and 0<=yy<H else np.nan
+            return hgt[y,x] if np.isnan(v) else v
+        gx=(h(x+1,y)-h(x-1,y))/2; gy=(h(x,y+1)-h(x,y-1))/2
+        n=np.array([-gx,-gy,1.0]); n/=np.linalg.norm(n)
+        put(x,y,z+hgt[y,x],n,m)
+    for g in grooves:
+        for (x,y) in g:
+            if 0<=x<W and 0<=y<H and pid[y,x]==_pid[0]: paint[y,x]=1
+            if 0<=x<W and 0<=y+1<H and pid[y+1,x]==_pid[0] and (x,y+1) not in g: paint[y+1,x]=2
+def hline(x0,x1,y): return [(x,y) for x in range(x0,x1+1)]
+def vline(x,y0,y1): return [(x,y) for y in range(y0,y1+1)]
+def mirror(poly,c): return [(2*c-x,y) for x,y in poly]
 
 cx=42
-def rows(im,r0,r1): return im.crop((0,r0,im.width,r1))
-# ---------------- legs: planted wide, kneecaps outward, source pixels untouched ----------------
-legL,legR=twin(LEG),LEG
-paste(legL,cx-21,52); paste(legR,cx+3,52)
-# ---------------- waist: the source elbow mechanism ----------------
-paste(outline(rows(ARM,15,21).crop((4,0,15,6))),cx-5,40)
-# ---------------- pelvis: source plate laid across ----------------
-pel=region_fill(ARM.rotate(90,expand=True),(4,3,24,12),(0,0,20,8))
-pel=outline(shape(pel,lambda x,y: abs(x-9.5)<=9.5-max(0,y-4)*1.5))
-paste(pel,cx-10,46)
-# ---------------- arms: upper arm + elbow hang from the shoulder ----------------
-armL,armR=twin(ARM),ARM
-uL,uR=rows(armL,0,22),rows(armR,0,22)
-paste(uL,cx-31,21); paste(uR,cx+15,21)
-# ---------------- chest: two 1:1 plates of the source upper-arm armour, each lit upper-left ----------------
-plate=rows(ARM,1,15).crop((0,0,15,14))
-chest=Image.new('RGBA',(30,18))
-chest.alpha_composite(plate,(0,0)); chest.alpha_composite(plate,(15,0))
-chest.alpha_composite(rows(ARM,1,5).crop((1,0,15,4)),(1,14)); chest.alpha_composite(rows(ARM,1,5).crop((1,0,15,4)),(15,14))
-chest=shape(chest,lambda x,y: abs(x-14.5)<=15-max(0,y-9)*1.1 and not (y<1 and abs(x-14.5)>12))
-cq=chest.load()
-for y in range(0,14):
-    if cq[14,y][3]: cq[14,y]=BR[0]
-    if cq[15,y][3]: cq[15,y]=K
-for x in range(0,30):
-    if cq[x,13][3]: cq[x,13]=BR[0]
+# ---------------- legs (back to front order doesn't matter: z-buffer) ----------------
+for s in (-1,1):
+    X=lambda x: cx+s*(x-cx) if s==1 else 2*cx-x if False else cx+s*(cx-x)*-1
+    hipx=cx+s*9; kx=cx+s*15; ax_=cx+s*16
+    sphere((hipx,57),4.5,3)
+    capsule((hipx,57),(kx,76),6.5,5.5,3,5)                         # thigh
+    sphere((kx,77),4,5)                                            # knee joint
+    plate([(kx-4,72),(kx+4,72),(kx+5,76),(kx+3,80),(kx-3,80),(kx-5,76)],z=11,thick=3,bevel=2,dome=0.8)  # kneecap
+    capsule((kx,79),(ax_,96),5.5,4.3,5,4)                           # shin
+    sphere((ax_,97),3,4)                                           # ankle
+    foot=[(ax_-7,97),(ax_+7,97),(ax_+9,101),(ax_+9,104),(ax_-9,104),(ax_-9,101)]
+    plate(foot,z=4,thick=4,bevel=2,dome=0.5,grooves=[vline(ax_-3,100,104),vline(ax_+3,100,104)])
+    for tx in (ax_-6,ax_,ax_+6):                                   # claw tips (source claw feet)
+        capsule((tx,103),(tx+ (tx-ax_)//3,106),1.4,0.8,7,7,m=1)
+# ---------------- pelvis / waist (flat, armoured, no belly) ----------------
+plate([(32,50),(52,50),(54,53),(48,59),(36,59),(30,53)],z=5,thick=5,bevel=2,dome=0.8,
+      grooves=[vline(cx,52,58)],bolts=[(34,53),(50,53)])
+capsule((cx,44),(cx,51),5,5,1,1,m=1)                                # spine housing
+plate([(34,43),(50,43),(49,50),(35,50)],z=5,thick=3,bevel=1.5,grooves=[hline(35,49,46)])   # abdominal plates
+# ---------------- chest ----------------
+chest=[(27,21),(57,21),(61,26),(60,35),(55,42),(48,45),(36,45),(29,42),(24,35),(23,26)]
+plate(chest,z=4,thick=7,bevel=3,dome=2.0,grooves=[vline(cx,24,44),hline(28,56,38)],
+      bolts=[(28,25),(56,25),(27,33),(57,33)])
 LOGO=["#########..","##########.","........##.",".###.####..","#.###.##...","##.###.##..","##..###.##.","##...###.##","##....###.#"]
-for j,row in enumerate(LOGO):
-    for i,ch in enumerate(row):
-        if ch=='#': cq[10+i,2+j]=RD[2] if j<7 else RD[1]
-paste(outline(chest),cx-15,20)
-# ---------------- head: source face panel, eye socket centred, ear fins; 2px neck ----------------
-hp=HEAD.load()
-face=Image.new('RGBA',(18,9)); fq=face.load()
-cols=list(range(8,13))+list(range(1,8))+list(range(13,19))
-for i,sx in enumerate(cols):
-    for j,sy in enumerate(range(6,15)):
-        c=hp[sx,sy]
-        if c[3]: fq[i,j]=c
-for j in range(9):
-    for i in (0,17):
-        if fq[i,j][3]: fq[i,j]=K
-head=Image.new('RGBA',(20,16)); head.alpha_composite(face,(1,6))
-for (sx0,sx1,dx) in ((10,15,2),(16,21,13)):
-    for y in range(1,7):
-        for x in range(sx0,sx1):
-            c=hp[x,y]
-            if c[3]: head.putpixel((dx+x-sx0,y-1),c)
-head=outline(crop(head))
-neck=outline(rows(ARM,16,18).crop((7,0,13,2)))
-paste(neck,cx-3,17)
-paste(head,cx-9,3)
-# ---------------- pauldrons ----------------
-paste(PAD,cx-30,15); paste(twin(PAD),cx+16,15)
-# ---------------- fists: forearms point at the viewer, knuckles forward just inside the elbows ----------------
-fist=crop(rows(ARM,30,ARM.height))
-paste(twin(fist),cx-25,40); paste(fist,cx+13,40)
+logo_px=[(cx-5+i,25+j) for j,row in enumerate(LOGO) for i,ch in enumerate(row) if ch=='#']
+chest_id=_pid[0]
+# ---------------- head ----------------
+capsule((cx,18),(cx,21),3.5,3.5,2,2,m=1)                           # 2px neck
+plate([(34,5),(50,5),(52,8),(52,16),(49,19),(35,19),(32,16),(32,8)],z=7,thick=6,bevel=2.5,dome=1.0,
+      grooves=[hline(34,50,9)])
+head_id=_pid[0]
+for s in (-1,1):                                                   # twin fins (the source ear fins)
+    fx=cx+s*6
+    plate([(fx-1,6),(fx+s*4,1),(fx+s*5,2),(fx+2*s+ (1 if s>0 else -1),7)],z=8,thick=2,bevel=1)
+eye_c=(cx,13)
+# ---------------- arms: combat guard ----------------
+for s,fist_y in ((-1,17),(1,21)):
+    shx=cx+s*18; ex=cx+s*24; fx=cx+s*14
+    sphere((shx,25),4.5,1)                                          # shoulder joint
+    capsule((shx,26),(ex,44),5.3,4.6,1,3)                           # upper arm
+    sphere((ex,45),4,4)                                            # elbow
+    capsule((ex,45),(fx,fist_y+5),5.2,4.4,4,12)                     # forearm, raised toward the viewer
+    plate([(fx-5,fist_y-2),(fx+5,fist_y-2),(fx+6,fist_y+2),(fx+5,fist_y+6),(fx-5,fist_y+6),(fx-6,fist_y+2)],
+          z=14,thick=4,bevel=2,dome=0.8,grooves=[hline(fx-5,fx+5,fist_y),vline(fx-2,fist_y+1,fist_y+5),vline(fx+2,fist_y+1,fist_y+5)])
+    # pauldron with the source spike
+    pc=cx+s*19
+    pd=[(pc-9,20),(pc-4,16),(pc+4,16),(pc+9,20),(pc+10,27),(pc+7,32),(pc-7,32),(pc-10,27)]
+    plate(pd,z=8,thick=6,bevel=3,dome=2.0,grooves=[hline(pc-9,pc+9,26)],bolts=[(pc-6,22),(pc+6,22)])
+    sp=[(pc+s*6,18),(pc+s*12,12),(pc+s*10,19)]
+    plate(sp,z=12,thick=2,bevel=1)
 
-outline(cv)
-GREY={'261209':'2b2626','3d1f12':'3a3333','4f2c19':'4a4242','502c1a':'4a4242','623921':'5a5151',
-      '704325':'675d5c','84512f':'7a706e','8d5936':'807573','aa6e46':'9c908c','cea173':'bfb5af','e2cc98':'ddd5cf',
-      '0b2b13':'380b04','10381a':'380b04','2a461b':'701508','465e24':'701508','c27a2d':'e02a11'}
-GREY={H(k):H(v) for k,v in GREY.items()}
-for y in range(Hh):
+# ---------------- shading ----------------
+L=np.array([-0.55,-0.65,0.55]); L/=np.linalg.norm(L); Hv=L+np.array([0,0,1.0]); Hv/=np.linalg.norm(Hv)
+rng=np.random.default_rng(7)
+grime=np.zeros((H,W))
+for sc,amp in ((8,0.16),(3,0.07)):                                  # blotchy grime
+    g=rng.random((H//sc+2,W//sc+2)); gi=np.array(Image.fromarray((g*255).astype(np.uint8)).resize((W+sc,H+sc),Image.BILINEAR))[:H,:W]/255
+    grime+= (gi-0.5)*2*amp
+grime-= np.linspace(0,0.16,H)[:,None]                               # dirt gathers toward the feet
+speck=rng.random((H,W))<0.10
+scuff=rng.random((H,W))<0.025
+img=np.zeros((H,W,3),dtype=np.uint8); alpha=np.zeros((H,W),dtype=bool)
+for y in range(H):
     for x in range(W):
-        c=px[x,y]
-        if c[3] and c in GREY: px[x,y]=GREY[c]
-o=crop(cv); out=Image.new('RGBA',(o.width+2,o.height+2)); out.alpha_composite(o,(1,1))
-out.save(OUT+'robot_1x.png')
-out.resize((out.width*3,out.height*3),Image.NEAREST).save(OUT+'robot_3x.png')
-bg=Image.new('RGBA',out.size,(200,200,200,255)); bg.alpha_composite(out)
-bg.resize((out.width*6,out.height*6),Image.NEAREST).save(OUT+'robot_6x_preview.png')
-print(out.size)
+        if mat[y,x]<0: continue
+        alpha[y,x]=True
+        n=normal[y,x]; lam=max(0,n@L); spec=max(0,n@Hv)**18
+        # ambient occlusion from nearby surfaces in front
+        occ=0
+        for dy in (-2,-1,0,1,2):
+            for dx in (-2,-1,0,1,2):
+                yy,xx=y+dy,x+dx
+                if 0<=yy<H and 0<=xx<W and mat[yy,xx]>=0 and depth[yy,xx]>depth[y,x]+2: occ+=1
+        v=0.03+0.74*lam+0.42*spec-0.03*occ+grime[y,x]-(0.08 if speck[y,x] else 0)+(0.14 if scuff[y,x] and lam>0.4 else 0)
+        if mat[y,x]==1: v=0.05+0.7*lam+0.7*spec-0.03*occ+grime[y,x]*0.6
+        if paint[y,x]==1: v-=0.28
+        if paint[y,x]==2: v+=0.12
+        ramp=ARMOR if mat[y,x]==0 else METAL
+        if pid[y,x]==chest_id and (x,y) in logo_px:                 # stencilled RealWare mark, takes the light & grime
+            ramp=RED[1:6]; v=v*0.9+0.12
+            if speck[y,x] and grime[y,x]<-0.05: ramp=ARMOR; v=0.12   # worn stencil
+        img[y,x]=ramp[int(max(0,min(0.999,v))*len(ramp))]
+# eye: recessed socket with the source cross-ring glow
+ex,ey=eye_c
+for y in range(ey-3,ey+4):
+    for x in range(ex-3,ex+4):
+        if abs(x-ex)<=3 and abs(y-ey)<=3: img[y,x]=METAL[0]
+EYE=[".R.","RRR",".R."]
+for j in range(-2,3):
+    for i in range(-2,3):
+        d=abs(i)+abs(j)
+        if d==2 and (i==0 or j==0): img[ey+j,ex+i]=RED[2]
+        if d==1: img[ey+j,ex+i]=RED[4]
+img[ey,ex]=RED[5]; img[ey-1,ex-1]=RED[1]; img[ey+1,ex+1]=RED[1]
+# internal separation: dark line where a nearer part overlaps
+out=img.copy()
+for y in range(H):
+    for x in range(W):
+        if not alpha[y,x]: continue
+        for dx,dy in ((1,0),(-1,0),(0,1),(0,-1)):
+            yy,xx=y+dy,x+dx
+            if 0<=yy<H and 0<=xx<W and alpha[yy,xx] and pid[yy,xx]!=pid[y,x] and depth[yy,xx]>depth[y,x]+1.5:
+                out[y,x]=BLACK if depth[yy,xx]>depth[y,x]+4 else METAL[0]; break
+# black silhouette outline
+rgba=np.zeros((H,W,4),dtype=np.uint8); rgba[...,:3]=out; rgba[...,3]=alpha*255
+for y in range(H):
+    for x in range(W):
+        if not alpha[y,x] and any(0<=y+dy<H and 0<=x+dx<W and alpha[y+dy,x+dx] for dx,dy in ((1,0),(-1,0),(0,1),(0,-1))):
+            rgba[y,x]=(0,0,0,255)
+im=Image.fromarray(rgba,'RGBA'); im=im.crop(im.getbbox())
+o=Image.new('RGBA',(im.width+2,im.height+2)); o.alpha_composite(im,(1,1))
+o.save(OUT+'robot_1x.png')
+o.resize((o.width*3,o.height*3),Image.NEAREST).save(OUT+'robot_3x.png')
+bg=Image.new('RGBA',o.size,(200,200,200,255)); bg.alpha_composite(o)
+bg.resize((o.width*6,o.height*6),Image.NEAREST).save(OUT+'robot_6x_preview.png')
+print(o.size)
